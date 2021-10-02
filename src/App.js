@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="container">
-          <form className="form" role="form">
+          <form className="form">
             <SchedulerComponent />
           </form>
         </div>
