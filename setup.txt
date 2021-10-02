@@ -1,0 +1,16 @@
+
+https://tecadmin.net/install-nvm-macos-with-homebrew/
+
+brew update 
+brew install nvm 
+mkdir ~/.nvm 
+vim ~/.bash_profile 
+#export NVM_DIR=~/.nvm
+#source $(brew --prefix nvm)/nvm.sh
+source ~/.bash_profile
+
+nvm install node
+
+https://stackoverflow.com/questions/51178763/cant-start-a-cloned-react-app
+nvm install
+nvm start
