@@ -1,0 +1,2 @@
+export const GENERATE_DESC = "GENERATE_DESC";
+export const GENERATE_EVENTS = "GENERATE_EVENTS";
