@@ -5,23 +5,23 @@ import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule
 // scheduler.freqIntervalWeekly
 export default class WeeklyScheduleComponent extends React.Component {
     constructor(props) {
-        this.state = { 
+        this.state = {
             schedule: this.props.schedule,
-            occuranceChoice: this.props.occuranceChoice 
+            occuranceChoice: this.props.occuranceChoice
         }
     }
 
     render() {
         const { schedule } = this.state.schedule;
         const { occuranceChoice } = this.state.occuranceChoice;
-        
+
         return (
             <div className="panel-body">
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="form-group">
                             <div>
-                                <label className="control-label" for="recurrEvery">RECURS EVERY {schedule.freq_recurrence_factor} WEEK(S)</label>
+                                <label className="control-label font-weight-bold" for="recurrEvery">RECURS EVERY {schedule.freq_recurrence_factor} WEEK(S)</label>
                                 <input id="recurrEvery" name="date" className="form-control text-uppercase" value={schedule.freq_recurrence_factor}
                                     placeholder="WEEK(S)" type="number" min="1" max="100" />
                             </div>

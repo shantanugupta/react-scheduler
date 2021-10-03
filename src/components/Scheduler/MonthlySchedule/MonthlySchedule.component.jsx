@@ -21,8 +21,8 @@ export default class MonthlyScheduleComponent extends React.Component {
                     <div className="col-lg-12">
                         <div className="form-group form-inline">
                             <div>
-                                <label className="control-label" for="recurrEvery">{getGetOrdinal(schedule.freq_interval)} OF EVERY</label>
-                                <label className="control-label" for="recurrEvery">{schedule.freq_recurrence_factor} MONTH(S)</label>
+                                <label className="control-label font-weight-bold" for="recurrEvery">{getGetOrdinal(schedule.freq_interval)} OF EVERY</label>
+                                <label className="control-label font-weight-bold" for="recurrEvery">{schedule.freq_recurrence_factor} MONTH(S)</label>
                                 <input id="recurrEvery" name="date" className="form-control text-uppercase" value={schedule.freq_interval} placeholder="DAY" type="number" min="1" max="31" />
                                 <input id="recurrEvery" name="date" className="form-control text-uppercase" value={schedule.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60" />
                             </div>

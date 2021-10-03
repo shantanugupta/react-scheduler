@@ -61,150 +61,140 @@ const SchedulerComponent = () => {
 		});
 	}
 
+	const hiddenClass = "";
+	const showClass = "show active";
+
 	return (
 		<div>
-			<div className="col-lg-12">
-				<div className="row">
-					<div>
-						<div className="form-group">
-							<label for="scheduleName">Please enter a schedule name</label>
-							<input type="text" id="scheduleName" name="name" className="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1"
-								value={state.name} onChange={(e) => handleChange(e)} />
-						</div>
-					</div>
+			<div className="card border-0">
+				<div className="form-group">
+					<label htmlFor="scheduleName" className="font-weight-bold">Please enter a schedule name</label>
+					<input type="text" id="scheduleName" name="name" className="form-control" placeholder="SCHEDULE NAME" aria-describedby="basic-addon1"
+						value={state.name} onChange={(e) => handleChange(e)} />
 				</div>
-				<div className="row">
-					<div >
-						<ul className="nav nav-tabs">
-							<li className="nav-item">
-								<a href="#freqType1" name="freq_type" className={"nav-link " + (state.freq_type === 1 ? 'active' : '')} data-toggle="tab"
-									onClick={(e) => { setState({ ...state, freq_type: 1 }) }}
-								>One time</a>
-							</li>
-							<li className="nav-item">
-								<a href="#freqType4" name="freq_type"
-									className={"nav-link " + (state.freq_type === 4 ? 'active' : '')} data-toggle="tab"
-									onClick={(e) => { setState({ ...state, freq_type: 4 }) }}>
-									Daily</a>
-							</li>
-							<li className="nav-item">
-								<a className={"nav-link" + (state.freq_type === 8 ? 'active' : '')} data-toggle="tab"
-									onClick={(e) => { setState({ ...state, freq_type: 8 }) }} href="#freqType8">Weekly</a>
-							</li>
-							<li className="nav-item">
-								<a className={"nav-link" + (state.freq_type === 16 ? 'active' : '')} data-toggle="tab"
-									onClick={(e) => { setState({ ...state, freq_type: 16 }) }} href="#freqType16">Monthly</a>
-							</li>
-							<li className="nav-item">
-								<a className={"nav-link" + (state.freq_type === 32 ? 'active' : '')} data-toggle="tab"
-									onClick={(e) => { setState({ ...state, freq_type: 32 }) }} href="#freqType32">Monthly Relative</a>
-							</li>
-							{
-								true &&
-								<li className="nav-item">
-									<a className={"nav-link" + (state.freq_type === 64 ? 'active' : '')} data-toggle="tab"
-										onClick={(e) => { setState({ ...state, freq_type: 64 }) }} href="#freqType64">Yearly</a>
-								</li>
-							}
-							{
-								true &&
-								<li className="nav-item">
-									<a className={"nav-link" + (state.freq_type === 128 ? 'active' : '')} data-toggle="tab"
-										onClick={(e) => { setState({ ...state, freq_type: 128 }) }} href="#freqType128">Year long</a>
-								</li>
-							}
-						</ul>
-						<div className="tab-content">
-							{/* One time schedule */}
-							<div className={"tab-panel" + (state.freq_type === 1 ? 'active' : '')} id="freqType1">
-								<div className="panel panel-default">
-									<OneTimeOnlyScheduleComponent schedule={state} onOneTimeOnlyScheduleChange={onOneTimeOnlyScheduleChangeHandler} />
-								</div>
-							</div>
-							{/* Daily schedule */}
-							<div className={"tab-panel" + (state.freq_type === 4 ? 'active' : '')} id="freqType4" >
-								<div className="panel panel-default">
-									<DailyScheduleComponent schedule={state} onDailyScheduleChange={onDailyScheduleChangeHandler} />
-								</div>
-							</div >
-							{/* Weekly schedule */}
-							< div className={"tab-panel" + (state.freq_type === 8 ? 'active' : '')} id="freqType8" >
-								<div className="panel panel-default">
-
-									{/* <WeeklyScheduleComponent schedule={state} /> */}
-											Weekly scheule
-
-								</div>
-							</div >
-							{/* Monthly schedule */}
-							< div className={"tab-panel" + (state.freq_type === 16 ? 'active' : '')} id="freqType16" >
-								<div className="panel panel-default">
-
-									{/* <MonthlyScheduleComponent schedule={state} /> */}
-											Monthly Schedule
-
-								</div>
-							</div >
-							{/* Monthly relative schedule */}
-							< div className={"tab-panel" + (state.freq_type === 32 ? 'active' : '')} id="freqType32" >
-								<div className="panel panel-default">
-									{/* <MonthlyRelativeScheduleComponent schedule={state} /> */}
-											Monthly relative schedule
-								</div>
-							</div >
-							{/* Yearly schedule */}
-							< div className={"tab-panel" + (state.freq_type === 64 ? 'active' : '')} id="freqType64" >
-								<div className="panel panel-default">
-									{/* <YearlyScheduleComponent schedule={state} /> */}
-											Yearly schedule
-								</div>
-							</div >
-							{/* Year long schedule */}
-							< div className={"tab-panel" + (state.freq_type === 128 ? 'active' : '')} id="freqType128" >
-								<div className="panel panel-default">
-
-									{/* <YearLongScheduleComponent schedule={state} /> */}
-											Year long schedule
-
-								</div>
-							</div >
-						</div >
+			</div>
+			<div >
+				<ul className="nav nav-tabs border-bottom-0" role="tablist">
+					<li className="nav-item">
+						<a href="#freqType1" name="freq_type" className={"nav-link " + (state.freq_type === 1 ? 'active' : '')}
+							onClick={(e) => { setState({ ...state, freq_type: 1 }) }}
+							data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === 1}>
+							One time</a>
+					</li>
+					<li className="nav-item">
+						<a href="#freqType4" name="freq_type"
+							className={"nav-link " + (state.freq_type === 4 ? 'active' : '')}
+							onClick={(e) => { setState({ ...state, freq_type: 4 }) }}
+							data-toggle="tab" role="tab" aria-controls="freqType4" aria-selected={state.freq_type === 4} >
+							Daily</a>
+					</li>
+					<li className="nav-item">
+						<a className={"nav-link " + (state.freq_type === 8 ? 'active' : '')}
+							onClick={(e) => { setState({ ...state, freq_type: 8 }) }} href="#freqType8"
+							data-toggle="tab" role="tab" aria-controls="freqType8" aria-selected={state.freq_type === 8}>
+							Weekly</a>
+					</li>
+					<li className="nav-item">
+						<a className={"nav-link " + (state.freq_type === 16 ? 'active' : '')}
+							onClick={(e) => { setState({ ...state, freq_type: 16 }) }} href="#freqType16"
+							data-toggle="tab" role="tab" aria-controls="freqType16" aria-selected={state.freq_type === 16}>
+							Monthly</a>
+					</li>
+					<li className="nav-item">
+						<a className={"nav-link " + (state.freq_type === 32 ? 'active' : '')}
+							onClick={(e) => { setState({ ...state, freq_type: 32 }) }} href="#freqType32"
+							data-toggle="tab" role="tab" aria-controls="freqType32" aria-selected={state.freq_type === 32}>
+							Monthly Relative</a>
+					</li>
+					{
+						true &&
+						<li className="nav-item">
+							<a className={"nav-link " + (state.freq_type === 64 ? 'active' : '')}
+								onClick={(e) => { setState({ ...state, freq_type: 64 }) }} href="#freqType64"
+								data-toggle="tab" role="tab" aria-controls="freqType64" aria-selected={state.freq_type === 64}>
+								Yearly</a>
+						</li>
+					}
+					{
+						true &&
+						<li className="nav-item">
+							<a className={"nav-link " + (state.freq_type === 128 ? 'active' : '')}
+								onClick={(e) => { setState({ ...state, freq_type: 128 }) }} href="#freqType128"
+								data-toggle="tab" role="tab" aria-controls="freqType128" aria-selected={state.freq_type === 128}>
+								Year long</a>
+						</li>
+					}
+				</ul>
+				<div className="tab-content border">
+					{/* One time schedule */}
+					<div className={"m-2 tab-pane fade " + (state.freq_type === 1 ? showClass : hiddenClass)} id="freqType1" role="tabpanel">
+						<OneTimeOnlyScheduleComponent schedule={state} onOneTimeOnlyScheduleChange={onOneTimeOnlyScheduleChangeHandler} />
+					</div>
+					{/* Daily schedule */}
+					<div className={"m-2 tab-pane fade " + (state.freq_type === 4 ? showClass : hiddenClass)} id="freqType4" role="tabpanel">
+						<DailyScheduleComponent schedule={state} onDailyScheduleChange={onDailyScheduleChangeHandler} />
+					</div >
+					{/* Weekly schedule */}
+					< div className={"m-2 tab-pane fade " + (state.freq_type === 8 ? showClass : hiddenClass)} id="freqType8" role="tabpanel">
+						{/* <WeeklyScheduleComponent schedule={state} /> */}
+						Weekly scheule
+					</div >
+					{/* Monthly schedule */}
+					< div className={"m-2 tab-pane fade " + (state.freq_type === 16 ? showClass : hiddenClass)} id="freqType16" role="tabpanel">
+						{/* <MonthlyScheduleComponent schedule={state} /> */}
+						Monthly Schedule
+					</div >
+					{/* Monthly relative schedule */}
+					< div className={"m-2 tab-pane fade " + (state.freq_type === 32 ? showClass : hiddenClass)} id="freqType32" role="tabpanel">
+						{/* <MonthlyRelativeScheduleComponent schedule={state} /> */}
+						Monthly relative schedule
+					</div >
+					{/* Yearly schedule */}
+					< div className={"m-2 tab-pane fade " + (state.freq_type === 64 ? showClass : hiddenClass)} id="freqType64" role="tabpanel">
+						{/* <YearlyScheduleComponent schedule={state} /> */}
+						Yearly schedule
+					</div >
+					{/* Year long schedule */}
+					< div className={"m-2 tab-pane fade " + (state.freq_type === 128 ? showClass : hiddenClass)} id="freqType128" role="tabpanel">
+						{/* <YearLongScheduleComponent schedule={state} /> */}
+						Year long schedule
 					</div >
 				</div >
-				<div className="row">
-					<div className="form-group">
-						<div className="row">
-							<div className="col-lg-12">
-								<label for="durationNumber">Duration</label>
-							</div>
+			</div >
+			<div className="card border-0 mt-2">
+				<div className="form-group">
+					<div className="row">
+						<div className="col-lg-12">
+							<label htmlFor="durationNumber" className="font-weight-bold">Duration</label>
 						</div>
-						<div className="row">
-							<div className="col-lg-6">
-								<input type="number" value={state.duration_interval} id="durationNumber" className="form-control" placeholder="Duration" min="0" max="100" />
-							</div>
-							<div className="col-lg-6">
-								<select id="durationUnit" className="form-control" data-toggle="popover" data-trigger="hover"
-									value={state.duration_subday_type}>
-									{
-										freqSubdayType.map(f => (
-											<option key={f.key} value={f.value}>
-												{f.value}
-											</option>))
-									}
-								</select>
-							</div>
-						</div>
-					</div>*
 					</div>
-				<div className="row">
-					<div className="well">
-						{state.description}
+					<div className="row">
+						<div className="col-lg-6">
+							<input type="number" value={state.duration_interval} id="durationNumber" className="form-control" placeholder="Duration" min="0" max="100" />
+						</div>
+						<div className="col-lg-6">
+							<select id="durationUnit" className="form-control" data-toggle="popover" data-trigger="hover"
+								value={state.duration_subday_type}>
+								{
+									freqSubdayType.map(f => (
+										<option key={f.key} value={f.value}>
+											{f.value}
+										</option>))
+								}
+							</select>
+						</div>
 					</div>
 				</div>
-				<div className="row">
-					{/* <input type="submit" onClick={generateEventsClick()} /> */}
+			</div>
+			<div className="card mt-2">
+				<div className="card-header">
+					{state.description}
 				</div>
-				{/* <div className="row">
+			</div>
+			<div className="">
+				{/* <input type="submit" onClick={generateEventsClick()} /> */}
+			</div>
+			{/* <div className="row">
 						<ul className="nav nav-tabs">
 							{
 								events.map(e => (
@@ -213,12 +203,12 @@ const SchedulerComponent = () => {
 									</li>))
 							}
 						</ul>
-					</div> */}
-			</div>
+					</div> */
+			}
 			{
 				true &&
-				<div className="col-lg-4">
-					<div>
+				<div className="card mt-2">
+					<div className="card-body">
 						<pre>{JSON.stringify(state, null, 2)}</pre>
 					</div>
 				</div>

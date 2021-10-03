@@ -1,0 +1,8 @@
+.tab-pane.fade {
+    transition: all 0.2s;
+    transform: translateY(1rem);
+  }
+  
+  .tab-pane.fade.show {
+    transform: translateY(0rem);
+  }

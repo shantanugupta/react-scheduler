@@ -32,7 +32,7 @@ const DailyScheduleComponent = ({ schedule, onDailyScheduleChange }) => {
                 <div className="col-lg-12">
                     <div className="form-group">
                         <div>
-                            <label className="control-label" for="recurrEvery">RECURS EVERY {state.freq_interval} DAYS</label>
+                            <label className="control-label font-weight-bold" for="recurrEvery">RECURS EVERY {state.freq_interval} DAYS</label>
                             <input id="recurrEvery" className="form-control text-uppercase"
                                 placeholder="DAY(S)" type="number" min="1" max="100" name="freq_interval"
                                 value={state.freq_interval} onChange={(e) => handleChange(e)} />

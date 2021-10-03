@@ -42,10 +42,10 @@ export default class MonthlyRelativeScheduleComponent extends React.Component {
                                             </option>))
                                     }
                                 </select>
-                                <label className="control-label" for="recurrEvery">OF EVERY</label>
+                                <label className="control-label font-weight-bold" for="recurrEvery">OF EVERY</label>
                                 <input id="recurrEvery" name="date" className="form-control text-uppercase"
                                     value={schedule.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60" />
-                                <label className="control-label" for="recurrEvery">MONTH(S)</label>
+                                <label className="control-label font-weight-bold" for="recurrEvery">MONTH(S)</label>
                             </div>
                         </div>
                     </div>
