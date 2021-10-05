@@ -32,6 +32,8 @@ jobs:
     # - name: Run tests
     #   run: npm run test
 
+    # Changed
+
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2
       with:
