@@ -17,7 +17,7 @@ const MonthlyRelativeScheduleComponent = ({ schedule, onMonthlyRelativeScheduleC
     const handleChange = e => {
         let tempState = {
             ...state,
-            [e.target.name]: e.target.value
+            [e.target.name]: parseInt(e.target.value, 10) || e.target.value
         }
 
         propogateChange(tempState);
@@ -34,20 +34,20 @@ const MonthlyRelativeScheduleComponent = ({ schedule, onMonthlyRelativeScheduleC
                 <div className="col-lg-12">
                     <div className="form-group form-inline">
                         <div>
-                            <select id="durationUnit" className="form-control" data-toggle="popover" data-trigger="hover"
-                                value={state.freq_relative_interval}>
+                            <select className="form-control" data-toggle="popover" data-trigger="hover"
+                                value={state.freq_relative_interval} onChange={(e) => handleChange(e)}>
                                 {
                                     freqRelativeInterval.map(f => (
-                                        <option key={f.key} value={f.value}>
+                                        <option key={"dropfreqRelativeInterval" + f.key} value={f.key}>
                                             {f.value}
                                         </option>))
                                 }
                             </select>
-                            <select id="durationUnit" className="form-control" data-toggle="popover" data-trigger="hover"
-                                value={state.freq_interval}>
+                            <select className="form-control" data-toggle="popover" data-trigger="hover"
+                                value={state.freq_interval} onChange={(e) => handleChange(e)}>
                                 {
                                     freqIntervalMonthlyRelative.map(g => (
-                                        <option key={g.key} value={g.value}>
+                                        <option key={"dropfreqIntervalMonthlyRelative" + g.key} value={g.key}>
                                             {g.value}
                                         </option>))
                                 }

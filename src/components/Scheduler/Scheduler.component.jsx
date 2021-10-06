@@ -196,7 +196,7 @@ const SchedulerComponent = () => {
 								name="duration_subday_type" value={state.duration_subday_type} onChange={(e) => handleChange(e)}>
 								{
 									freqSubdayType.map(f => (
-										< option key={f.key} value={f.key} >
+										<option key={"durationUnit" + f.key} value={f.key} >
 											{f.value}
 										</option>
 									))}
