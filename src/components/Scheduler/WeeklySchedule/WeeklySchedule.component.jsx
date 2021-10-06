@@ -1,53 +1,82 @@
 ﻿import React from 'react';
 import './WeeklySchedule.style.css';
+import { freqIntervalWeekly } from './../ScheduleLookup'
 import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule.component';
+import { useState } from 'react';
+
 // freq_recurrence_factor 
 // scheduler.freqIntervalWeekly
-export default class WeeklyScheduleComponent extends React.Component {
-    constructor(props) {
-        this.state = {
-            schedule: this.props.schedule,
-            occuranceChoice: this.props.occuranceChoice
+const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
+
+    const [state, setState] = useState({
+        ...schedule
+    })
+
+    const handleChange = e => {
+        let name = e.target.name;
+        let value = parseInt(e.target.value) || e.target.value;
+
+        let tempState = {
+            ...state,
+            [name]: value
         }
+        propogateChange(tempState);
     }
 
-    render() {
-        const { schedule } = this.state.schedule;
-        const { occuranceChoice } = this.state.occuranceChoice;
+    const checkboxChanged = (k, v, e) => {
+        let tempState = {
+            ...state
+        }
 
-        return (
-            <div className="panel-body">
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="form-group">
-                            <div>
-                                <label className="control-label font-weight-bold" for="recurrEvery">RECURS EVERY {schedule.freq_recurrence_factor} WEEK(S)</label>
-                                <input id="recurrEvery" name="date" className="form-control text-uppercase" value={schedule.freq_recurrence_factor}
-                                    placeholder="WEEK(S)" type="number" min="1" max="100" />
-                            </div>
+        if (e.target.checked)
+            tempState.freq_interval += parseInt(e.target.value)
+        else
+            tempState.freq_interval -= parseInt(e.target.value)
+
+        propogateChange(tempState);
+    }
+
+    const propogateChange = t => {
+        setState(t);
+        onWeeklyScheduleChange(t);
+    }
+
+    return (
+        <div className="panel-body">
+            <div className="row">
+                <div className="col-lg-12">
+                    <div className="form-group">
+                        <div>
+                            <label className="control-label font-weight-bold" htmlFor="recurrEvery">RECURS EVERY {state.freq_recurrence_factor} WEEK(S)</label>
+                            <input id="recurrEvery" name="freq_recurrence_factor" className="form-control text-uppercase" value={state.freq_recurrence_factor}
+                                placeholder="WEEK(S)" type="number" min="1" max="100"
+                                onChange={e => handleChange(e)} />
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="form-group form-inline">
-                            <strong>ON</strong>
-                            <div className="checkbox-inline">
-                                {
-                                    scheduler.freqIntervalWeekly.map(f => {
-                                        <label className="checkbox-inline">
-                                            <input type="checkbox" value={f.key}
-                                                onClick={checkboxChanged(f.key, $index)}>{f.value}
-                                            </input>
-                                        </label>
-                                    })
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <FrequencyScheduleComponent schedule={schedule} occuranceChoice={occuranceChoice}></FrequencyScheduleComponent>
             </div>
-        )
-    }
+            <div className="row">
+                <div className="form-group form-inline ml-3">
+                    <strong>ON</strong>
+                    <div className="form-inline ml-2">
+                        {
+                            freqIntervalWeekly.map((f, index) => {
+                                return (<div className="form-inline ml-2">
+                                    <input type="checkbox" id={"cboxFreqIntervalWeekly" + f.key} value={f.key}
+                                        onClick={e => checkboxChanged(f.key, f.identifier, e)} />
+                                    <label className="ml-2" htmlFor={"cboxFreqIntervalWeekly" + f.key}>
+                                        {f.value}
+                                    </label>
+                                </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+            <FrequencyScheduleComponent schedule={state} onFrequencyScheduleChange={propogateChange}></FrequencyScheduleComponent>
+        </div >
+    );
 }
+
+export default WeeklyScheduleComponent;

@@ -1,17 +1,24 @@
 ﻿import React from 'react';
 import './YearLongSchedule.style.css';
+import { useState } from 'react';
 
-export default class YearLongScheduleComponent extends React.Component {
-    constructor(props) {
-        this.state = { schedule: this.props.schedule }
+const YearLongScheduleComponent = ({ schedule, onYearLongScheduleChange }) => {
+    const [state, setState] = useState({
+        ...schedule
+    })
+
+    const handleChange = (e) => {
+        let tempState = {
+            ...state,
+            [e.target.name]: e.target.value
+        };
+        setState(tempState);
+        onYearLongScheduleChange(tempState);
     }
 
-    render() {
-        const { schedule } = this.state.schedule;
-        const { occuranceChoice } = this.state.occuranceChoice;
-        
-        return (
-            <div className="panel-body">Year long schedule</div>
-        )
-    }
+    return (
+        <div className="panel-body">Year long schedule</div>
+    );
 }
+
+export default YearLongScheduleComponent;

@@ -1,13 +1,13 @@
 import moment from 'moment';
+import * as schedulerData from './ScheduleLookup';
 
 var timeFormat = "hh:mm A";
 var dateFormat = "YYYY/MM/DD";
 var dateTimeFormat = dateFormat + ' ' + timeFormat;
-var date = new moment();
 var occuranceChoice = true;
 
 export const getGetOrdinal = n => {
-    if (n == undefined) {
+    if (n === undefined) {
         return "Nth"
     }
     var s = ["th", "st", "nd", "rd"],
@@ -39,9 +39,9 @@ export const generateScheduleDescription = (schedule) => {
             var loop = 1;
             while (loop <= 7) {
                 var power = Math.pow(2, loop - 1);
-                if ((sch.freq_interval & power) == power) {
-                    var val = schedulerData.freqIntervalWeekly.filter(function (f) {
-                        if (f.key == power)
+                if ((sch.freq_interval & power) === power) {
+                    var val = schedulerData.freqIntervalWeekly.filter(f => {
+                        if (f.key === power)
                             return f;
                     })[0].value;
                     selectedWeekdays += val + ", ";
@@ -52,7 +52,7 @@ export const generateScheduleDescription = (schedule) => {
             }
             desc += "on " + selectedWeekdays;
             //Occurs every n week(s) on Monday, Tuesday, Wednesday, ....
-            if (desc.endsWith(", ") == true) {
+            if (desc.endsWith(", ") === true) {
                 // Remove , and space from desc
                 desc = desc.substr(0, desc.length - 2);
             }
@@ -67,7 +67,7 @@ export const generateScheduleDescription = (schedule) => {
 
             //var fri = sch.freq_relative_interval;
             var freq_rel_intv = '';
-            if (sch.freq_relative_interval != undefined && sch.freq_relative_interval > 0) {
+            if (sch.freq_relative_interval !== undefined && sch.freq_relative_interval > 0) {
                 var x = schedulerData.freqRelativeInterval.filter(f => {
                     if (f.key === sch.freq_relative_interval)
                         return f;
@@ -87,43 +87,46 @@ export const generateScheduleDescription = (schedule) => {
 
             desc += freq_rel_intv + " " + freq_intv_str + " of that month";
             break;
+        default:
+            desc = "Unable to generate description for this schedule";
+            break;
     } //END SWITCH FreqType variations
 
     var s = sch.freq_subday_type;
     var freq_subday_type_str = '';
-    if (sch.freq_subday_interval != undefined && sch.freq_subday_interval > 0) {
+    if (sch.freq_subday_interval !== undefined && sch.freq_subday_interval > 0) {
         var z = schedulerData.freqSubdayType.filter(f => {
-            if (f.key == s)
+            if (f.key === s)
                 return f;
         });
 
-        freq_subday_type_str = " every " + sch.freq_subday_interval + " " + (z != undefined && z.length > 0 ? z[0].value.toLowerCase() : '');
+        freq_subday_type_str = " every " + sch.freq_subday_interval + " " + (z !== undefined && z.length > 0 ? z[0].value.toLowerCase() : '');
     }
     desc = desc + freq_subday_type_str;
 
-    if (occuranceChoice == true) {
+    if (occuranceChoice === true) {
         desc += " once at " + moment(sch.active_start_time).format(timeFormat);
     }
 
-    if (occuranceChoice == false && (s == 2 || s == 4 || s == 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
+    if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
         desc += " between " + moment(sch.active_start_time).format(timeFormat)
             + " and " + moment(sch.active_end_time).format(timeFormat);
 
     var d = sch.duration_subday_type;
-    if (d == 2 || d == 4 || d == 8) {  //d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds
+    if (d === 2 || d === 4 || d === 8) {  //d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds
         var freqSubdayType = schedulerData.freqSubdayType.filter(f => {
-            if (f.key == d)
+            if (f.key === d)
                 return f;
         })[0].value;
         desc = desc + " for " + sch.duration_interval + " " + freqSubdayType;
     }
 
-    if (f != 1) //FreqType.OneTimeOnly)
+    if (f !== 1) //FreqType.OneTimeOnly)
     {
         // Schedule will be used starting on x  with no end date
         // Schedule will be used between x and y
         desc += ". Schedule will be used";
-        if (sch.active_end_date == undefined || sch.active_end_date == 0) { //if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)
+        if (sch.active_end_date === undefined || sch.active_end_date === 0) { //if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)
             desc += " starting on " + sch.active_start_date.toLocaleDateString() + " with no end date";
         } else {
             desc += " between " + sch.active_start_date.toLocaleDateString()
@@ -153,7 +156,7 @@ export const generateEvents = (schedule) => {
                 , dateTimeFormat).toDate();
 
             if (sch.duration_interval > 0) {
-                var a = schedulerData.freqSubdayType.filter(function (f) { if (f.key == sch.duration_subday_type) return f; });
+                var a = schedulerData.freqSubdayType.filter(function (f) { if (f.key === sch.duration_subday_type) return f; });
 
                 if (a.length > 0) {
                     var identifier = a[0].identifier;
@@ -171,13 +174,13 @@ export const generateEvents = (schedule) => {
             var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
             var nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
 
-            while (moment(nextDate).isAfter(activeEndDate) == false) {
+            while (moment(nextDate).isAfter(activeEndDate) === false) {
                 var s = sch.freq_subday_type;
-                if (occuranceChoice == false && (s == 2 || s == 4 || s == 8)) {
+                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
                     var nextTime = nextDate;
                     var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
-                    while (moment(nextTime).isAfter(nextEndTime) == false) {
+                    while (moment(nextTime).isAfter(nextEndTime) === false) {
                         if (sch.duration_interval > 0) {
                             endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                         }
@@ -200,9 +203,9 @@ export const generateEvents = (schedule) => {
             var loop = 1;
             while (loop <= 7) {
                 var power = Math.pow(2, loop - 1);
-                if ((sch.freq_interval & power) == power) {
+                if ((sch.freq_interval & power) === power) {
                     var val = schedulerData.freqIntervalWeekly.filter(function (f) {
-                        if (f.key == power)
+                        if (f.key === power)
                             return f;
                     })[0];
                     selectedWeekDays.push(val);
@@ -210,7 +213,7 @@ export const generateEvents = (schedule) => {
                 loop++;
             }
 
-            if (selectedWeekDays != undefined || selectedWeekDays.length > 0) {
+            if (selectedWeekDays !== undefined || selectedWeekDays.length > 0) {
                 var i = 0;
                 for (i = 0; i < selectedWeekDays.length; i++) {
                     var weekDay = selectedWeekDays[i];
@@ -227,13 +230,13 @@ export const generateEvents = (schedule) => {
                     else
                         nextDate = moment(nextDate).add(1, 'weeks').isoWeekday(schedulerData.momentWeek[weekDay.value]).toDate();
 
-                    while (moment(nextDate).isAfter(activeEndDate) == false) {
+                    while (moment(nextDate).isAfter(activeEndDate) === false) {
                         var s = sch.freq_subday_type;
-                        if (occuranceChoice == false && (s == 2 || s == 4 || s == 8)) {
+                        if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
                             var nextTime = nextDate;
                             var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
-                            while (moment(nextTime).isAfter(nextEndTime) == false) {
+                            while (moment(nextTime).isAfter(nextEndTime) === false) {
                                 if (sch.duration_interval > 0) {
                                     endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                                 }
@@ -260,16 +263,16 @@ export const generateEvents = (schedule) => {
             var startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
             var nextDate = moment(sch.active_start_date).startOf('month').add(sch.freq_interval - 1, 'days').add(startTimeInSeconds, 'seconds').toDate();
 
-            if (moment(nextDate).isBefore(sch.active_start_date) == true)
+            if (moment(nextDate).isBefore(sch.active_start_date) === true)
                 nextDate = moment(nextDate).add(1, 'month').toDate();
 
-            while (moment(nextDate).isAfter(activeEndDate) == false) {
+            while (moment(nextDate).isAfter(activeEndDate) === false) {
                 var s = sch.freq_subday_type;
-                if (occuranceChoice == false && (s == 2 || s == 4 || s == 8)) {
+                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
                     var nextTime = nextDate;
                     var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
-                    while (moment(nextTime).isAfter(nextEndTime) == false) {
+                    while (moment(nextTime).isAfter(nextEndTime) === false) {
                         if (sch.duration_interval > 0) {
                             endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                         }
@@ -298,7 +301,7 @@ export const generateEvents = (schedule) => {
             var firstSecThrdFrthLast = Math.log2(sch.freq_relative_interval);
             var weekdayWeekendSunToMon = sch.freq_interval;
 
-            while (moment(nextDate).isAfter(activeEndDate) == false) {
+            while (moment(nextDate).isAfter(activeEndDate) === false) {
                 var startOfMonth = moment(nextDate).startOf('month').toDate();
                 var endOfMonth = moment(nextDate).endOf('month').startOf('day').toDate();
 
@@ -318,21 +321,21 @@ export const generateEvents = (schedule) => {
 
                     nextDate = moment(nth).add(startTimeInSeconds, 'seconds').toDate();
                 }
-                else if (weekdayWeekendSunToMon == 8) {//day
-                    if (firstSecThrdFrthLast == 4) {//last day of the month
+                else if (weekdayWeekendSunToMon === 8) {//day
+                    if (firstSecThrdFrthLast === 4) {//last day of the month
                         nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();
                     }
                     else {//1st or 2nd or 3rd or 4th day of the month
                         nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
                     }
                 }
-                else if (weekdayWeekendSunToMon == 9) {//weekday
+                else if (weekdayWeekendSunToMon === 9) {//weekday
                     var day = 0;
-                    if (firstSecThrdFrthLast == 4) {//last day of the month
+                    if (firstSecThrdFrthLast === 4) {//last day of the month
                         day = moment(endOfMonth).weekday();
-                        if (day == 0) {//end of the month is sunday
+                        if (day === 0) {//end of the month is sunday
                             nextDate = moment(endOfMonth).add(-2, 'days').add(startTimeInSeconds, 'seconds').toDate();//subtract saturday and sunday
-                        } else if (day == 6) {//end of the month is saturday
+                        } else if (day === 6) {//end of the month is saturday
                             nextDate = moment(endOfMonth).add(-1, 'days').add(startTimeInSeconds, 'seconds').toDate();//subtract saturday
                         } else {
                             nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();//its already a weekday
@@ -340,7 +343,7 @@ export const generateEvents = (schedule) => {
                     }
                     else {//1st or 2nd or 3rd or 4th day of the month
                         day = moment(startOfMonth).weekday();
-                        day = day == 0 ? 7 : day;
+                        day = day === 0 ? 7 : day;
 
                         if (day + firstSecThrdFrthLast < 6) {
                             nextDate = moment(startOfMonth).add(firstSecThrdFrthLast, 'days').add(startTimeInSeconds, 'seconds').toDate();
@@ -351,10 +354,10 @@ export const generateEvents = (schedule) => {
                         }
                     }
                 }
-                else if (weekdayWeekendSunToMon == 10) {//weekend day
-                    if (firstSecThrdFrthLast == 4) {//last weekend day
+                else if (weekdayWeekendSunToMon === 10) {//weekend day
+                    if (firstSecThrdFrthLast === 4) {//last weekend day
                         day = moment(endOfMonth).weekday();
-                        if ((new Set([1, 2, 3, 4, 5])).has(day) == true) {//end of the month is any weekday
+                        if ((new Set([1, 2, 3, 4, 5])).has(day) === true) {//end of the month is any weekday
                             nextDate = moment(endOfMonth).add(-1 * day, 'days').add(startTimeInSeconds, 'seconds').toDate();
                         } else {//end of the month is any weekend day
                             nextDate = moment(endOfMonth).add(startTimeInSeconds, 'seconds').toDate();
@@ -363,16 +366,16 @@ export const generateEvents = (schedule) => {
                     else {//1st, 2nd, 3rd, 4th weekend day
                         day = moment(startOfMonth).weekday();
                         var delta = 0;
-                        if (day != 0) {//1st of the month is anything other than Sunday
+                        if (day !== 0) {//1st of the month is anything other than Sunday
                             var delta = 6 - day + ((firstSecThrdFrthLast <= 1) ? firstSecThrdFrthLast : 7 + firstSecThrdFrthLast % 2);
                             nextDate = moment(startOfMonth).add(delta, 'days').add(startTimeInSeconds, 'seconds').toDate();
-                        } else if (day == 0) {//1st of the month is Sunday //(1st Oct 2017 = Sunday i.e. day == 0)
-                            if (firstSecThrdFrthLast == 0) {//first weekend day
+                        } else if (day === 0) {//1st of the month is Sunday //(1st Oct 2017 = Sunday i.e. day == 0)
+                            if (firstSecThrdFrthLast === 0) {//first weekend day
                                 nextDate = moment(startOfMonth).add(startTimeInSeconds, 'seconds').toDate();
-                            } else if ((new Set([1, 2])).has(firstSecThrdFrthLast) == true) {//2nd or 3rd weekend day
+                            } else if ((new Set([1, 2])).has(firstSecThrdFrthLast) === true) {//2nd or 3rd weekend day
                                 //move to saturday of next week from sunday of current week
                                 nextDate = moment(startOfMonth).add(6 + firstSecThrdFrthLast - 1, 'days').add(startTimeInSeconds, 'seconds').toDate();
-                            } else if (firstSecThrdFrthLast == 3) {//4th weekend day
+                            } else if (firstSecThrdFrthLast === 3) {//4th weekend day
                                 nextDate = moment(startOfMonth).add(1, 'week').add(6, 'days').add(startTimeInSeconds, 'seconds').toDate();
                             }
                         }
@@ -380,11 +383,11 @@ export const generateEvents = (schedule) => {
                 }
 
                 var s = sch.freq_subday_type;
-                if (occuranceChoice == false && (s == 2 || s == 4 || s == 8)) {
+                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
                     var nextTime = nextDate;
                     var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
-                    while (moment(nextTime).isAfter(nextEndTime) == false) {
+                    while (moment(nextTime).isAfter(nextEndTime) === false) {
                         if (sch.duration_interval > 0) {
                             endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                         }

@@ -25,3 +25,5 @@ D.git
 .vscode
 debug.log
 yarn.lock
+src/.index.js.swo
+src/.index.js.swp
