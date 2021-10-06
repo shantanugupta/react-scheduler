@@ -22,7 +22,7 @@ const FrequencyScheduleComponent = ({ schedule, onFrequencyScheduleChange }) => 
             value = e.target.value
         }
         else
-            value = parseInt(e.target.value) || e.target.value;
+            value = parseInt(e.target.value, 10) || e.target.value;
 
         let tempState = {
             ...state,

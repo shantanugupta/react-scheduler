@@ -14,7 +14,7 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
 
     const handleChange = e => {
         let name = e.target.name;
-        let value = parseInt(e.target.value) || e.target.value;
+        let value = parseInt(e.target.value, 10) || e.target.value;
 
         let tempState = {
             ...state,
@@ -29,9 +29,9 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
         }
 
         if (e.target.checked)
-            tempState.freq_interval += parseInt(e.target.value)
+            tempState.freq_interval += parseInt(e.target.value, 10)
         else
-            tempState.freq_interval -= parseInt(e.target.value)
+            tempState.freq_interval -= parseInt(e.target.value, 10)
 
         propogateChange(tempState);
     }

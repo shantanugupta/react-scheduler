@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Scheduler.style.css';
-import * as moment from 'moment';
+import moment from 'moment';
 import { freqSubdayType } from './ScheduleLookup';
 
 // import { connect } from 'react-redux';
@@ -24,7 +24,7 @@ const SchedulerComponent = () => {
 	const handleChange = e => {
 		let tempState = {
 			...state,
-			[e.target.name]: parseInt(e.target.value) || e.target.value
+			[e.target.name]: parseInt(e.target.value, 10) || e.target.value
 		}
 		setState(tempState);
 	}
