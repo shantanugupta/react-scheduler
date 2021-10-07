@@ -14,7 +14,7 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
 
     const handleChange = e => {
         let name = e.target.name;
-        let value = parseInt(e.target.value) || e.target.value;
+        let value = parseInt(e.target.value, 10) || e.target.value;
 
         let tempState = {
             ...state,
@@ -23,15 +23,15 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
         propogateChange(tempState);
     }
 
-    const checkboxChanged = (k, v, e) => {
+    const checkboxChanged = (e) => {
         let tempState = {
             ...state
         }
 
         if (e.target.checked)
-            tempState.freq_interval += parseInt(e.target.value)
+            tempState.freq_interval += parseInt(e.target.value, 10)
         else
-            tempState.freq_interval -= parseInt(e.target.value)
+            tempState.freq_interval -= parseInt(e.target.value, 10)
 
         propogateChange(tempState);
     }
@@ -61,9 +61,8 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
                     <div className="form-inline ml-2">
                         {
                             freqIntervalWeekly.map((f, index) => {
-                                return (<div className="form-inline ml-2">
-                                    <input type="checkbox" id={"cboxFreqIntervalWeekly" + f.key} value={f.key}
-                                        onClick={e => checkboxChanged(f.key, f.identifier, e)} />
+                                return (<div className="form-inline ml-2" key={"divFreqIntervalWeekly" + f.key}>
+                                    <input type="checkbox" value={f.key} onClick={e => checkboxChanged(e)} />
                                     <label className="ml-2" htmlFor={"cboxFreqIntervalWeekly" + f.key}>
                                         {f.value}
                                     </label>

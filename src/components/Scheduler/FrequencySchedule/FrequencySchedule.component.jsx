@@ -6,12 +6,15 @@ const FrequencyScheduleComponent = ({ schedule, onFrequencyScheduleChange }) => 
         ...schedule
     })
 
-    const [occuranceChoiceState, setoccuranceChoice] = useState({
+    const [occuranceChoiceState, setOccuranceChoiceState] = useState({
         occuranceChoiceState: state.occuranceChoice
     })
 
     const occuranceChoiceChange = e => {
-        setoccuranceChoice(e.target.value)
+        let t = {
+            [e.target.name]: e.target.value
+        }
+        setOccuranceChoiceState(t)
     }
 
     const handleChange = e => {
@@ -22,7 +25,7 @@ const FrequencyScheduleComponent = ({ schedule, onFrequencyScheduleChange }) => 
             value = e.target.value
         }
         else
-            value = parseInt(e.target.value) || e.target.value;
+            value = parseInt(e.target.value, 10) || e.target.value;
 
         let tempState = {
             ...state,
