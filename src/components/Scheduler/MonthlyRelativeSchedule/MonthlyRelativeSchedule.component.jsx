@@ -33,32 +33,30 @@ const MonthlyRelativeScheduleComponent = ({ schedule, onMonthlyRelativeScheduleC
             <div className="row">
                 <div className="col-lg-12">
                     <div className="form-group form-inline">
-                        <div>
-                            <select className="form-control" data-toggle="popover" data-trigger="hover"
-                                value={state.freq_relative_interval} onChange={(e) => handleChange(e)}>
-                                {
-                                    freqRelativeInterval.map(f => (
-                                        <option key={"dropfreqRelativeInterval" + f.key} value={f.key}>
-                                            {f.value}
-                                        </option>))
-                                }
-                            </select>
-                            <select className="form-control" data-toggle="popover" data-trigger="hover"
-                                value={state.freq_interval} onChange={(e) => handleChange(e)}>
-                                {
-                                    freqIntervalMonthlyRelative.map(g => (
-                                        <option key={"dropfreqIntervalMonthlyRelative" + g.key} value={g.key}>
-                                            {g.value}
-                                        </option>))
-                                }
-                            </select>
-                            <label className="control-label font-weight-bold" htmlFor="recurrEvery">OF EVERY</label>
-                            <input id="recurrEvery" name="freq_recurrence_factor" className="form-control text-uppercase"
-                                value={state.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60"
-                                onChange={(e) => handleChange(e)}
-                            />
-                            <label className="control-label font-weight-bold" htmlFor="recurrEvery">MONTH(S)</label>
-                        </div>
+                        <select className="form-control mr-1" data-toggle="popover" data-trigger="hover"
+                            value={state.freq_relative_interval} onChange={(e) => handleChange(e)}>
+                            {
+                                freqRelativeInterval.map(f => (
+                                    <option key={"dropfreqRelativeInterval" + f.key} value={f.key}>
+                                        {f.value}
+                                    </option>))
+                            }
+                        </select>
+                        <select className="form-control mx-1" data-toggle="popover" data-trigger="hover"
+                            value={state.freq_interval} onChange={(e) => handleChange(e)}>
+                            {
+                                freqIntervalMonthlyRelative.map(g => (
+                                    <option key={"dropfreqIntervalMonthlyRelative" + g.key} value={g.key}>
+                                        {g.value}
+                                    </option>))
+                            }
+                        </select>
+                        <label className="control-label font-weight-bold mx-1" htmlFor="recurrEvery">OF EVERY</label>
+                        <input id="recurrEvery" name="freq_recurrence_factor" className="form-control text-uppercase mx-1"
+                            value={state.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60"
+                            onChange={(e) => handleChange(e)}
+                        />
+                        <label className="control-label font-weight-bold" htmlFor="recurrEvery">MONTH(S)</label>
                     </div>
                 </div>
             </div>
