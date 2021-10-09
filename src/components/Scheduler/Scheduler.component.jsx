@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Scheduler.style.css';
 import moment from 'moment';
-import { freqSubdayType } from './ScheduleLookup';
+import { freqSubdayType,freqType } from './ScheduleLookup';
 
 // import { connect } from 'react-redux';
 // import generateDescription from './../../actions/scheduleActions';
@@ -13,20 +13,50 @@ import MonthlyScheduleComponent from './MonthlySchedule/MonthlySchedule.componen
 import MonthlyRelativeScheduleComponent from './MonthlyRelativeSchedule/MonthlyRelativeSchedule.component';
 import YearlyScheduleComponent from './YearlySchedule/YearlySchedule.component';
 import YearLongScheduleComponent from './YearLongSchedule/YearLongSchedule.component';
-
+import { generateScheduleDescription } from './scheduler.data';
 
 const SchedulerComponent = () => {
 	const dateFormatyyyymmdd = "yyyy-MM-DD";
 	const timeFormathhMM = "HH:mm";
-
 	const [state, setState] = useState(blankSchedule);
+	//const desc = generateScheduleDescription(state);
 
 	const handleChange = e => {
+
 		let tempState = {
 			...state,
-			[e.target.name]: parseInt(e.target.value, 10) || e.target.value
+			[e.target.name]: parseInt(e.target.value, 10) || e.target.value,
 		}
+		// debugger;
+		// const desc = generateScheduleDescription(tempState);
+		// tempState.description = desc;
+
 		setState(tempState);
+	}
+
+	const handleNumberInput = e => {
+		//This function will accept only +ve numbers.
+		// let isnum = /^\d+$/.test(e.target.value);
+		// if(!isnum){
+		// 	e.stopPropagation();
+		// 	return;
+		// }
+		// handleChange(e);
+		
+		if(e.target.value === ''){
+				handleChange(e);
+				return;
+			}
+
+		let isnum = /^\d+$/.test(e.target.value);
+		if(isnum){
+			handleChange(e);
+		}
+		else
+		{
+  			e.stopPropagation();
+		}
+		
 	}
 
 	// Create a blank schedule when loading component for the first time or after saving/reset the component
@@ -39,7 +69,7 @@ const SchedulerComponent = () => {
 		return {
 			name: '',
 			description: 'Description goes here',
-			freq_type: 32, //onetime, daily, weekly, monthly, monthly relative
+			freq_type: 8, //onetime, daily, weekly, monthly, monthly relative
 			freq_interval: 0,
 			freq_relative_interval: 0,
 			freq_recurrence_factor: 0,
@@ -50,25 +80,19 @@ const SchedulerComponent = () => {
 			freq_subday_type: 1,
 			freq_subday_interval: 0,
 			duration_subday_type: 1, //duration in (hour, min, sec)
-			duration_interval: 0 //duration value
+			duration_interval: '' //duration value
 		}
 	}
 
 	//Reset schedule fields based on component
-	const scheduleTypeChange = (e, new_freq_type) => {
-		let tempState = {
-			...state,
-			freq_type: new_freq_type
-		}
-		resetSchedule(tempState);
-	}
 
-	const resetSchedule = oldState => {
-		let tempState = blankSchedule();
-		tempState.name = oldState.name;
-		tempState.duration_subday_type = oldState.duration_subday_type;
-		tempState.duration_interval = oldState.duration_interval;
-		tempState.freq_type = oldState.freq_type;
+	const scheduleTypeChange = (new_freq_type) => {
+		let tempState = {
+			...blankSchedule(),
+			freq_type: new_freq_type,
+			name: state.name
+		}
+
 		setState(tempState);
 	}
 
@@ -97,54 +121,16 @@ const SchedulerComponent = () => {
 				<div >
 					{/* TAB BUTTONS */}
 					<ul className="nav nav-tabs border-bottom-0" role="tablist">
-						<li className="nav-item">
-							<a href="#freqType1" name="freq_type" className={"nav-link " + (state.freq_type === 1 ? 'active' : '')}
-								onClick={(e) => scheduleTypeChange(e, 1)}
-								data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === 1}>
-								One time</a>
-						</li>
-						<li className="nav-item">
-							<a href="#freqType4" name="freq_type"
-								className={"nav-link " + (state.freq_type === 4 ? 'active' : '')}
-								onClick={(e) => scheduleTypeChange(e, 4)}
-								data-toggle="tab" role="tab" aria-controls="freqType4" aria-selected={state.freq_type === 4} >
-								Daily</a>
-						</li>
-						<li className="nav-item">
-							<a className={"nav-link " + (state.freq_type === 8 ? 'active' : '')}
-								onClick={(e) => scheduleTypeChange(e, 8)} href="#freqType8"
-								data-toggle="tab" role="tab" aria-controls="freqType8" aria-selected={state.freq_type === 8}>
-								Weekly</a>
-						</li>
-						<li className="nav-item">
-							<a className={"nav-link " + (state.freq_type === 16 ? 'active' : '')}
-								onClick={(e) => scheduleTypeChange(e, 16)} href="#freqType16"
-								data-toggle="tab" role="tab" aria-controls="freqType16" aria-selected={state.freq_type === 16}>
-								Monthly</a>
-						</li>
-						<li className="nav-item">
-							<a className={"nav-link " + (state.freq_type === 32 ? 'active' : '')}
-								onClick={(e) => scheduleTypeChange(e, 32)} href="#freqType32"
-								data-toggle="tab" role="tab" aria-controls="freqType32" aria-selected={state.freq_type === 32}>
-								Monthly Relative</a>
-						</li>
 						{
-							true &&
-							<li className="nav-item">
-								<a className={"nav-link " + (state.freq_type === 64 ? 'active' : '')}
-									onClick={(e) => scheduleTypeChange(e, 64)} href="#freqType64"
-									data-toggle="tab" role="tab" aria-controls="freqType64" aria-selected={state.freq_type === 64}>
-									Yearly</a>
-							</li>
-						}
-						{
-							true &&
-							<li className="nav-item">
-								<a className={"nav-link " + (state.freq_type === 128 ? 'active' : '')}
-									onClick={(e) => scheduleTypeChange(e, 128)} href="#freqType128"
-									data-toggle="tab" role="tab" aria-controls="freqType128" aria-selected={state.freq_type === 128}>
-									Year long</a>
-							</li>
+							freqType.map(freq => {
+								return (
+									<li key={freq.key} className="nav-item">
+										<a href="#freqType1" name="freq_type" className={"nav-link " + (state.freq_type === freq.key ? 'active' : '')}
+										onClick={(e) => scheduleTypeChange(freq.key)}
+										data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === freq.key}>
+										{freq.value}</a>
+									</li>)
+							})
 						}
 					</ul>
 					{/* TAB CONTENT */}
@@ -189,10 +175,6 @@ const SchedulerComponent = () => {
 						</div>
 						<div className="row">
 							<div className="col-lg-6">
-								<input type="number" value={state.duration_interval} id="durationNumber" className="form-control"
-									placeholder="Duration" min="0" max="100" name="duration_interval" onChange={(e) => handleChange(e)} />
-							</div>
-							<div className="col-lg-6">
 								<select id="durationUnit" className="form-control" data-toggle="popover" data-trigger="hover"
 									name="duration_subday_type" value={state.duration_subday_type} onChange={(e) => handleChange(e)}>
 									{
@@ -203,6 +185,13 @@ const SchedulerComponent = () => {
 										))}
 								</select>
 							</div>
+							{state.duration_subday_type !== 1 ? 
+										(<div className="col-lg-6">
+										<input type="text" value={state.duration_interval} id="durationNumber" className="form-control"
+											placeholder="Duration" name="duration_interval" onChange={handleNumberInput} />
+										</div>)
+							 : null}
+							
 						</div>
 					</div>
 				</div>

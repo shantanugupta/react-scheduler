@@ -2,15 +2,22 @@
 import './WeeklySchedule.style.css';
 import { freqIntervalWeekly } from './../ScheduleLookup'
 import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule.component';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 
 // freq_recurrence_factor 
 // scheduler.freqIntervalWeekly
-const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
+//const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
+
+    const WeeklyScheduleComponent = (props) => {
 
     const [state, setState] = useState({
-        ...schedule
+        ...props.schedule
     })
+    
+    useEffect(() => {
+        let newState = props.schedule;
+        setState(newState);
+    }, [props.schedule])
 
     const handleChange = e => {
         let name = e.target.name;
@@ -38,7 +45,7 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
 
     const propogateChange = t => {
         setState(t);
-        onWeeklyScheduleChange(t);
+        props.onWeeklyScheduleChange(t);
     }
 
     return (
@@ -61,8 +68,8 @@ const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
                     <div className="form-inline ml-2">
                         {
                             freqIntervalWeekly.map((f, index) => {
-                                return (<div className="form-inline ml-2" key={"divFreqIntervalWeekly" + f.key}>
-                                    <input type="checkbox" value={f.key} onClick={e => checkboxChanged(e)} />
+                                return (<div className="form-inline ml-4" key={"divFreqIntervalWeekly" + f.key}>
+                                    <input id={"cboxFreqIntervalWeekly" + f.key} type="checkbox" value={f.key} onClick={e => checkboxChanged(e)} />
                                     <label className="ml-2" htmlFor={"cboxFreqIntervalWeekly" + f.key}>
                                         {f.value}
                                     </label>
