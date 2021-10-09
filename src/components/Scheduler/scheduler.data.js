@@ -17,6 +17,7 @@ export const getGetOrdinal = n => {
 
 //evaluates description property of scheduler everything any UI property is changed
 export const generateScheduleDescription = (schedule) => {
+    console.log(schedule)
     var desc = "Occurs";
     var sch = schedule;
 
@@ -112,8 +113,11 @@ export const generateScheduleDescription = (schedule) => {
         if (sch.active_end_date === undefined || sch.active_end_date === 0) { //if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)
             desc += " starting on " + sch.active_start_date.toLocaleDateString() + " with no end date";
         } else {
-            desc += " between " + sch.active_start_date.toLocaleDateString()
-                + " and " + sch.active_end_date.toLocaleDateString();
+            debugger;
+            console.log(sch.active_start_date);
+            console.log(moment(sch.active_start_date).format(dateFormat));
+            desc += " between " + moment(sch.active_start_date).format(dateFormat)
+                + " and " + moment(sch.active_end_date).format(dateFormat);
         }
     }
 
