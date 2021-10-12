@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './Scheduler.style.css';
-import moment from 'moment';
-import { freqSubdayType,freqType } from './ScheduleLookup';
+import { freqSubdayTypeMinMax, freqSubdayType, freqType } from './ScheduleLookup';
 
 // import { connect } from 'react-redux';
 // import generateDescription from './../../actions/scheduleActions';
@@ -19,52 +18,37 @@ const SchedulerComponent = () => {
 	const dateFormatyyyymmdd = "yyyy-MM-DD";
 	const timeFormathhMM = "HH:mm";
 	const [state, setState] = useState(blankSchedule);
-	//const desc = generateScheduleDescription(state);
+	// const desc = generateScheduleDescription(state);
 
 	const handleChange = e => {
+		let name = e.target.name;
+		let value = e.target.value;
 
 		let tempState = {
 			...state,
-			[e.target.name]: parseInt(e.target.value, 10) || e.target.value,
+			[name]: parseInt(value, 10) || value,
 		}
-		// debugger;
-		// const desc = generateScheduleDescription(tempState);
-		// tempState.description = desc;
+
+		if (name === "duration_subday_type") {
+			if (tempState.duration_subday_type === 2 && tempState.duration_interval > 24) {
+				tempState.duration_interval = 24;
+			} else if (tempState.duration_subday_type === 1) {
+				tempState.duration_interval = 0;
+			}
+		}
+
+		const desc = generateScheduleDescription(tempState);
+		tempState.description = desc;
 
 		setState(tempState);
 	}
 
-	const handleNumberInput = e => {
-		//This function will accept only +ve numbers.
-		// let isnum = /^\d+$/.test(e.target.value);
-		// if(!isnum){
-		// 	e.stopPropagation();
-		// 	return;
-		// }
-		// handleChange(e);
-		
-		if(e.target.value === ''){
-				handleChange(e);
-				return;
-			}
-
-		let isnum = /^\d+$/.test(e.target.value);
-		if(isnum){
-			handleChange(e);
-		}
-		else
-		{
-  			e.stopPropagation();
-		}
-		
-	}
-
 	// Create a blank schedule when loading component for the first time or after saving/reset the component
 	function blankSchedule() {
-		let active_start_date = moment().startOf('day').format(dateFormatyyyymmdd);
-		let active_end_date = moment().startOf('day').format(dateFormatyyyymmdd);
-		let active_start_time = moment().startOf('hour').format(timeFormathhMM);
-		let active_end_time = moment().startOf('hour').format(timeFormathhMM);
+		let active_start_date = undefined;// moment().startOf('day').format(dateFormatyyyymmdd);
+		let active_end_date = undefined;// moment().startOf('day').format(dateFormatyyyymmdd);
+		let active_start_time = undefined;//  moment().startOf('hour').format(timeFormathhMM);
+		let active_end_time = undefined;//  moment().startOf('hour').format(timeFormathhMM);
 
 		return {
 			name: '',
@@ -80,11 +64,27 @@ const SchedulerComponent = () => {
 			freq_subday_type: 1,
 			freq_subday_interval: 0,
 			duration_subday_type: 1, //duration in (hour, min, sec)
-			duration_interval: '' //duration value
+			duration_interval: '', //duration value
+			occurance_choice_state: undefined
 		}
 	}
 
-	//Reset schedule fields based on component
+	const getDurationInterval = (key, value, duration_interval) => {
+		let description = '';
+
+		if (key === 1) {
+			description = value;
+		} else {
+			if (key === 2 && duration_interval > 24) {
+				description = 24 + " " + value
+			}
+			else {
+				description = duration_interval + " " + value
+			}
+		}
+
+		return description;
+	}
 
 	const scheduleTypeChange = (new_freq_type) => {
 		let tempState = {
@@ -97,10 +97,16 @@ const SchedulerComponent = () => {
 	}
 
 	const commonScheduleChangeHandler = s => {
-		setState({
+		let tempState = {
 			...state,
 			...s,
-		});
+		}
+
+		// debugger;
+		const desc = generateScheduleDescription(tempState);
+		tempState.description = desc;
+
+		setState(tempState);
 	}
 
 	const hiddenClass = "";
@@ -126,9 +132,9 @@ const SchedulerComponent = () => {
 								return (
 									<li key={freq.key} className="nav-item">
 										<a href="#freqType1" name="freq_type" className={"nav-link " + (state.freq_type === freq.key ? 'active' : '')}
-										onClick={(e) => scheduleTypeChange(freq.key)}
-										data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === freq.key}>
-										{freq.value}</a>
+											onClick={(e) => scheduleTypeChange(freq.key)}
+											data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === freq.key}>
+											{freq.value}</a>
 									</li>)
 							})
 						}
@@ -180,18 +186,18 @@ const SchedulerComponent = () => {
 									{
 										freqSubdayType.map(f => (
 											<option key={"durationUnit" + f.key} value={f.key} >
-												{f.value}
+												{getDurationInterval(f.key, f.value, state.duration_interval)}
 											</option>
 										))}
 								</select>
 							</div>
-							{state.duration_subday_type !== 1 ? 
-										(<div className="col-lg-6">
-										<input type="text" value={state.duration_interval} id="durationNumber" className="form-control"
-											placeholder="Duration" name="duration_interval" onChange={handleNumberInput} />
-										</div>)
-							 : null}
-							
+							<div className="col-lg-6">
+								<input type="range" id="durationNumber" className="form-range w-50 align-middle"
+									placeholder="Duration" name="duration_interval" value={state.duration_interval} onChange={handleChange}
+									min={freqSubdayTypeMinMax.hasOwnProperty(state.duration_subday_type) ? freqSubdayTypeMinMax[state.duration_subday_type].min : 0}
+									max={freqSubdayTypeMinMax.hasOwnProperty(state.duration_subday_type) ? freqSubdayTypeMinMax[state.duration_subday_type].max : 0}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -227,10 +233,5 @@ const SchedulerComponent = () => {
 		</div>
 	)
 }
-// const mapStateToProps = state => ({
-// 	schedule: state.schedule
-// });
-
-// export default connect(mapStateToProps, {generateDescription})(SchedulerComponent);
 
 export default SchedulerComponent;

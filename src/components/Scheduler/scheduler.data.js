@@ -4,7 +4,6 @@ import * as schedulerData from './ScheduleLookup';
 var timeFormat = "hh:mm A";
 var dateFormat = "YYYY/MM/DD";
 var dateTimeFormat = dateFormat + ' ' + timeFormat;
-var occuranceChoice = true;
 
 export const getGetOrdinal = n => {
     if (n === undefined) {
@@ -17,15 +16,21 @@ export const getGetOrdinal = n => {
 
 //evaluates description property of scheduler everything any UI property is changed
 export const generateScheduleDescription = (schedule) => {
-    console.log(schedule)
     var desc = "Occurs";
     var sch = schedule;
+
+    console.log(moment(sch.active_start_time));
+    console.log(moment(sch.active_start_time).format(timeFormat));
+
+    let active_start_time_string = sch.active_start_time === undefined ? "[start time not provided]" : moment(sch.active_start_time, timeFormat).format(timeFormat);
+    let active_end_time_string = sch.active_end_time === undefined ? "[end time not provided]" : moment(sch.active_end_time, timeFormat).format(timeFormat);
+    let active_start_date_string = sch.active_start_date === undefined ? "[start date not provided]" : moment(sch.active_start_date).format(dateFormat);
+    let active_end_date_string = sch.active_end_date === undefined ? "[end date not provided]" : moment(sch.active_end_date).format(dateFormat);
 
     var f = sch.freq_type;
     switch (f) {
         case 1: //FreqType.OneTimeOnly:
-            desc += " on " + sch.active_start_date.toLocaleDateString() + " at "
-                + moment(sch.active_start_time).format(timeFormat);
+            desc += " on " + active_start_date_string + " at " + active_start_time_string;
             // Occurs on x(date) at y(time)
             break;
         case 4: //FreqType.Daily:
@@ -33,7 +38,7 @@ export const generateScheduleDescription = (schedule) => {
             // Occurs every n days(s)
             break;
         case 8: //FreqType.Weekly:
-            desc += " every " + sch.freq_recurrence_factor + " week(s) ";
+            desc += " every " + sch.freq_recurrence_factor + " week(s)";
             //Occurs every n week(s)
             let selectedWeekdays = '';
             //generate weekday list from freq_interval i.e. 3 = {Monday, Tuesday}, 7 = {Monday, Tuesday, Wednesday}
@@ -48,7 +53,7 @@ export const generateScheduleDescription = (schedule) => {
 
                 loop++;
             }
-            desc += "on " + selectedWeekdays;
+            desc += selectedWeekdays === '' ? '' : " on " + selectedWeekdays;
             //Occurs every n week(s) on Monday, Tuesday, Wednesday, ....
             if (desc.endsWith(", ") === true) {
                 // Remove , and space from desc
@@ -91,13 +96,12 @@ export const generateScheduleDescription = (schedule) => {
     }
     desc = desc + freq_subday_type_str;
 
-    if (occuranceChoice === true) {
-        desc += " once at " + moment(sch.active_start_time).format(timeFormat);
+    if (sch.occurance_choice_state === true) {
+        desc += " once at " + active_start_time_string;
     }
 
-    if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
-        desc += " between " + moment(sch.active_start_time).format(timeFormat)
-            + " and " + moment(sch.active_end_time).format(timeFormat);
+    if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) //if (s == FreqSubdayType.Hours || s == FreqSubdayType.Minutes || s == FreqSubdayType.Seconds)
+        desc += " between " + active_start_time_string + " and " + active_end_time_string;
 
     let d = sch.duration_subday_type;
     if (d === 2 || d === 4 || d === 8) {  //d == FreqSubdayType.Hours || d == FreqSubdayType.Minutes || d == FreqSubdayType.Seconds
@@ -109,15 +113,13 @@ export const generateScheduleDescription = (schedule) => {
     {
         // Schedule will be used starting on x  with no end date
         // Schedule will be used between x and y
-        desc += ". Schedule will be used";
-        if (sch.active_end_date === undefined || sch.active_end_date === 0) { //if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)
-            desc += " starting on " + sch.active_start_date.toLocaleDateString() + " with no end date";
+
+        if (sch.active_end_date === undefined) { //if (sch.active_end_date == Convert.ToInt32(Common.ConvertDateToInt(DateTime.MaxValue)) || active_end_date == 0)
+            desc += ". Schedule will be used";
+            desc += " starting on " + active_start_date_string + " with no end date";
         } else {
-            debugger;
-            console.log(sch.active_start_date);
-            console.log(moment(sch.active_start_date).format(dateFormat));
-            desc += " between " + moment(sch.active_start_date).format(dateFormat)
-                + " and " + moment(sch.active_end_date).format(dateFormat);
+            desc += ". Schedule will be used";
+            desc += " between " + active_start_date_string + " and " + active_end_date_string;
         }
     }
 
@@ -130,6 +132,11 @@ export const generateEvents = (schedule) => {
     var events = [];
     var sch = schedule;
     //var isValid = isScheduleValid(sch);
+
+    // let active_start_time_string = sch.active_start_time === undefined ? "[start time not provided]" : moment(sch.active_start_time).format(timeFormat);
+    // let active_end_time_string = sch.active_end_time === undefined ? "[end time not provided]" : moment(sch.active_end_time).format(timeFormat);
+    // let active_start_date_string = sch.active_start_date === undefined ? "[start date not provided]" : moment(sch.active_start_date).format(dateFormat);
+    // let active_end_date_string = sch.active_end_date === undefined ? "[end date not provided]" : moment(sch.active_end_date).format(dateFormat);
 
     var f = sch.freq_type;
     switch (f) {
@@ -163,7 +170,7 @@ export const generateEvents = (schedule) => {
 
             while (moment(nextDate).isAfter(activeEndDate) === false) {
                 let s = sch.freq_subday_type;
-                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
+                if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                     let nextTime = nextDate;
                     let nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
@@ -216,7 +223,7 @@ export const generateEvents = (schedule) => {
 
                     while (moment(nextDate).isAfter(activeEndDate) === false) {
                         let s = sch.freq_subday_type;
-                        if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
+                        if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                             let nextTime = nextDate;
                             let nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
@@ -252,7 +259,7 @@ export const generateEvents = (schedule) => {
 
             while (moment(nextDate).isAfter(activeEndDate) === false) {
                 var s = sch.freq_subday_type;
-                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
+                if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                     var nextTime = nextDate;
                     var nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
@@ -367,7 +374,7 @@ export const generateEvents = (schedule) => {
                 }
 
                 let s = sch.freq_subday_type;
-                if (occuranceChoice === false && (s === 2 || s === 4 || s === 8)) {
+                if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                     let nextTime = nextDate;
                     let nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
 
