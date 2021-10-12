@@ -31,6 +31,14 @@ const FrequencyScheduleComponent = props => {
 
         tempState[name] = value;
 
+        if (name === "freq_subday_type") {
+            if (tempState.freq_subday_type === 2 && tempState.freq_subday_interval > 24) {
+                tempState.freq_subday_interval = 24;
+            } else if (tempState.freq_subday_type === 1) {
+                tempState.freq_subday_interval = 0;
+            }
+        }
+
         setState(tempState);
         props.onFrequencyScheduleChange(tempState);
     }
@@ -50,6 +58,23 @@ const FrequencyScheduleComponent = props => {
         } else if (isOccurAt === false) {
             //reset nothing
         }
+    }
+
+    const getFreqSubdayInterval = (key, value, freq_subday_interval) => {
+        let description = '';
+
+        if (key === 1) {
+            description = value;
+        } else {
+            if (key === 2 && freq_subday_interval > 24) {
+                description = 24 + " " + value
+            }
+            else {
+                description = freq_subday_interval + " " + value
+            }
+        }
+
+        return description;
     }
 
     return (
@@ -84,7 +109,7 @@ const FrequencyScheduleComponent = props => {
                                 value="true" onChange={(e) => handleChange(e)} /><strong className="ml-2" htmlFor="occurOnceRadio">OCCUR AT</strong>
                         </label>
                     </div>
-                    <div className="form-group">
+                    <div className={"form-group " + ([false, undefined].includes(state.occurance_choice_state) ? "d-none" : "")}>
                         <label htmlFor="at" className="control-label ml-2 mr-2"></label>
                         <input id="at" name="active_start_time" className="form-control text-uppercase" type="time"
                             value={state.active_start_time} onChange={(e) => handleChange(e)} />
@@ -103,32 +128,34 @@ const FrequencyScheduleComponent = props => {
                         </label>
                     </div>
                     {/* DURATION NUMBER */}
-                    <input type="number" id="durationNumber" className="form-control col-lg-2" placeholder="Duration" name="freq_subday_interval"
-                        min={freqSubdayTypeMinMax.hasOwnProperty(state.freq_subday_type) ? freqSubdayTypeMinMax[state.freq_subday_type].min : 0}
-                        max={freqSubdayTypeMinMax.hasOwnProperty(state.freq_subday_type) ? freqSubdayTypeMinMax[state.freq_subday_type].max : 0}
-                        value={state.freq_subday_interval}
-                        onChange={(e) => handleChange(e)} />
-                    {/* DURATION UNIT DROPDOWN */}
-                    <select id="durationUnit" className="form-control  ml-2" data-toggle="popover" data-trigger="hover" name="freq_subday_type"
-                        value={state.freq_subday_type} onChange={(e) => handleChange(e)}>
-                        {
-                            freqSubdayType.map(i => (
-                                <option key={i.key} value={i.key}>
-                                    {i.value}
-                                </option>))
-                        }
-                    </select>
-                    {/* STARTING TIME */}
-                    <div className="form-group">
-                        <label className="control-label ml-2 mr-2 font-weight-bold" htmlFor="startTime">STARTING TIME</label>
-                        <input id="startTime" className="form-control text-uppercase" type="time" name="active_start_time"
-                            value={state.active_start_time} onChange={(e) => handleChange(e)} />
-                    </div>
-                    {/* END TIME */}
-                    <div className="form-group">
-                        <label className="control-label ml-2 mr-2 font-weight-bold" htmlFor="endTime">END TIME</label>
-                        <input id="endTime" className="form-control text-uppercase" type="time" name="active_end_time"
-                            value={state.active_end_time} onChange={(e) => handleChange(e)} />
+                    <div className={"form-inline " + ([true, undefined].includes(state.occurance_choice_state) ? "d-none" : "")}>
+                        <input type="range" id="durationNumber" className="form-range col-lg-2" placeholder="Duration" name="freq_subday_interval"
+                            min={freqSubdayTypeMinMax.hasOwnProperty(state.freq_subday_type) ? freqSubdayTypeMinMax[state.freq_subday_type].min : 0}
+                            max={freqSubdayTypeMinMax.hasOwnProperty(state.freq_subday_type) ? freqSubdayTypeMinMax[state.freq_subday_type].max : 0}
+                            value={state.freq_subday_interval}
+                            onChange={(e) => handleChange(e)} />
+                        {/* DURATION UNIT DROPDOWN */}
+                        <select id="durationUnit" className="form-control  ml-2" data-toggle="popover" data-trigger="hover" name="freq_subday_type"
+                            value={state.freq_subday_type} onChange={(e) => handleChange(e)}>
+                            {
+                                freqSubdayType.map(i => (
+                                    <option key={i.key} value={i.key}>
+                                        {getFreqSubdayInterval(i.key, i.value, state.freq_subday_interval)}
+                                    </option>))
+                            }
+                        </select>
+                        {/* STARTING TIME */}
+                        <div className="form-group">
+                            <label className="control-label ml-2 mr-2 font-weight-bold" htmlFor="startTime">STARTING TIME</label>
+                            <input id="startTime" className="form-control text-uppercase" type="time" name="active_start_time"
+                                value={state.active_start_time} onChange={(e) => handleChange(e)} />
+                        </div>
+                        {/* END TIME */}
+                        <div className="form-group">
+                            <label className="control-label ml-2 mr-2 font-weight-bold" htmlFor="endTime">END TIME</label>
+                            <input id="endTime" className="form-control text-uppercase" type="time" name="active_end_time"
+                                value={state.active_end_time} onChange={(e) => handleChange(e)} />
+                        </div>
                     </div>
                 </div>
             </div>

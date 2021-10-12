@@ -47,7 +47,7 @@ export const freqIntervalMonthlyRelative =
         , { key: 10, value: 'Weekend day' }]
 
 export const freqSubdayTypeMinMax = {
-    '1': { min: 1, max: 100 },
+    '1': { min: 1, max: 24 },
     '2': { min: 1, max: 24 },
     '4': { min: 1, max: 60 },
     '8': { min: 1, max: 60 },
