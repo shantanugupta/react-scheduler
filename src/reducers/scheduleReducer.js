@@ -8,8 +8,8 @@ export default function (state = initialState, action) {
     console.log('scheduleReducer called');
     switch (action.type) {
         case GENERATE_DESC:
-            return { 
-                ...state 
+            return {
+                ...state
             }
         default:
             return state;

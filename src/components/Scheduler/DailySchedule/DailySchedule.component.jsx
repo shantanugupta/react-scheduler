@@ -4,8 +4,7 @@ import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule
 // freq_interval 
 const DailyScheduleComponent = ({ schedule, onDailyScheduleChange }) => {
     const [state, setState] = useState({
-        freq_interval: schedule.freq_interval,
-        occuranceChoice: false,
+        ...schedule
     });
 
     const onFrequencyScheduleChangeHandler = e => {
