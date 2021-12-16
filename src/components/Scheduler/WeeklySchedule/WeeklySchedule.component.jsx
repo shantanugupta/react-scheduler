@@ -1,31 +1,30 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import './WeeklySchedule.style.css';
 import { freqIntervalWeekly } from './../ScheduleLookup'
 import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule.component';
-import { useState,useEffect } from 'react';
 
 // freq_recurrence_factor 
 // scheduler.freqIntervalWeekly
 //const WeeklyScheduleComponent = ({ schedule, onWeeklyScheduleChange }) => {
 
-    const WeeklyScheduleComponent = (props) => {
+const WeeklyScheduleComponent = (props) => {
 
     const [state, setState] = useState({
         ...props.schedule
     })
-    
+
     useEffect(() => {
         let newState = props.schedule;
         setState(newState);
     }, [props.schedule])
 
     const handleChange = e => {
-        let name = e.target.name;
-        let value = parseInt(e.target.value, 10) || e.target.value;
+        let name = e.target.attributes["property_name"].value;
+        let value = e.target.value;
 
         let tempState = {
             ...state,
-            [name]: value
+            [name]: parseInt(value, 10) || value
         }
         propogateChange(tempState);
     }
@@ -45,7 +44,7 @@ import { useState,useEffect } from 'react';
 
     const propogateChange = t => {
         setState(t);
-        props.onWeeklyScheduleChange(t);
+        props.onComponentChange(t);
     }
 
     return (
@@ -55,7 +54,7 @@ import { useState,useEffect } from 'react';
                     <div className="form-group">
                         <div>
                             <label className="control-label font-weight-bold" htmlFor="recurrEvery">RECURS EVERY {state.freq_recurrence_factor} WEEK(S)</label>
-                            <input id="recurrEvery" name="freq_recurrence_factor" className="form-control text-uppercase" value={state.freq_recurrence_factor}
+                            <input id="recurrEvery" property_name="freq_recurrence_factor" className="form-control text-uppercase" value={state.freq_recurrence_factor}
                                 placeholder="WEEK(S)" type="number" min="1" max="100"
                                 onChange={e => handleChange(e)} />
                         </div>

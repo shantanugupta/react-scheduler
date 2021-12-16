@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule.component';
 
 // freq_interval 
-const DailyScheduleComponent = ({ schedule, onDailyScheduleChange }) => {
+const DailyScheduleComponent = (props) => {
     const [state, setState] = useState({
-        ...schedule
+        ...props.schedule
     });
 
     const onFrequencyScheduleChangeHandler = e => {
@@ -13,16 +13,24 @@ const DailyScheduleComponent = ({ schedule, onDailyScheduleChange }) => {
             ...e
         };
         setState(tempState);
-        onDailyScheduleChange(tempState);
+        props.onComponentChange(tempState);
     }
 
+    useEffect(() => {
+        let newState = props.schedule;
+        setState(newState);
+    }, [props.schedule])
+
     const handleChange = (e) => {
+        let name = e.target.attributes["property_name"].value;
+        let value = e.target.value;
+
         let tempState = {
             ...state,
-            [e.target.name]: e.target.value
+            [name]: value
         };
         setState(tempState);
-        onDailyScheduleChange(tempState);
+        props.onComponentChange(tempState);
     }
 
     return (
@@ -33,13 +41,13 @@ const DailyScheduleComponent = ({ schedule, onDailyScheduleChange }) => {
                         <div>
                             <label className="control-label font-weight-bold" htmlFor="recurrEvery">RECURS EVERY {state.freq_interval} DAYS</label>
                             <input id="recurrEvery" className="form-control text-uppercase"
-                                placeholder="DAY(S)" type="number" min="1" max="100" name="freq_interval"
+                                placeholder="DAY(S)" type="number" min="1" max="100" property_name="freq_interval"
                                 value={state.freq_interval} onChange={(e) => handleChange(e)} />
                         </div>
                     </div>
                 </div>
             </div>
-            <FrequencyScheduleComponent schedule={schedule}
+            <FrequencyScheduleComponent schedule={props.schedule}
                 onFrequencyScheduleChange={onFrequencyScheduleChangeHandler} />
         </div>
     )
