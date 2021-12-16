@@ -39,10 +39,10 @@ const MonthlyScheduleComponent = props => {
                     <div className="form-group  form-inline">
                         <label className="control-label font-weight-bold" htmlFor="recurrEvery">{getGetOrdinal(state.freq_interval)} OF EVERY</label>
                         <label className="control-label font-weight-bold" htmlFor="recurrEvery">{state.freq_recurrence_factor} MONTH(S)</label>
-                        <input id="recurrEvery" property_name="date" className="form-control text-uppercase col-lg-1 ml-1"
+                        <input id="recurrEvery" property_name="freq_interval" className="form-control text-uppercase col-lg-1 ml-1"
                             value={state.freq_interval} placeholder="DAY" type="number" min="1" max="31"
                             onChange={(e) => handleChange(e)} />
-                        <input id="recurrEvery" property_name="date" className="form-control text-uppercase col-lg-2  ml-1"
+                        <input id="recurrEvery" property_name="freq_recurrence_factor" className="form-control text-uppercase col-lg-2  ml-1"
                             value={state.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60"
                             onChange={(e) => handleChange(e)} />
                     </div>
