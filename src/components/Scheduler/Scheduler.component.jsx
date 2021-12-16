@@ -45,9 +45,9 @@ const SchedulerComponent = () => {
 
 	const generateEventsClick = e => {
 		let events = generateEvents(state);
-		console.log(events);
 		setEventState(events);
 	}
+
 	// Create a blank schedule when loading component for the first time or after saving/reset the component
 	function blankSchedule() {
 		let active_start_date = moment().startOf('day').format(dateFormatyyyymmdd);
@@ -216,7 +216,7 @@ const SchedulerComponent = () => {
 						<input className="btn btn-primary" type="submit" onClick={(e) => generateEventsClick(e)} />
 					</div>
 				</div>
-				<div className="card col-3 p-2 ml-2">
+				<div className="card col-4 p-2 ml-2">
 					{
 						true &&
 						<div className="card-body">
@@ -226,11 +226,28 @@ const SchedulerComponent = () => {
 				</div>
 			</div>
 			<div className="card row p-2 m-2">
-				Events{eventState.map(
-					(e, index) => (<li key={"event_" + index}>
-						<strong>Start:</strong>{e.start.toLocaleString()} <strong>End:</strong>{e.end.toLocaleString()}
-					</li>)
-				)}
+				<table className="table table-stripe table-hover ">
+					<caption>List of events</caption>
+					<thead>
+						<tr>
+							<th scope="col">S.No.</th>
+							<th scope="col">Start date/time</th>
+							<th scope="col">End date/time</th>
+						</tr>
+					</thead>
+					<tbody>
+						{eventState.map(
+							(e, index) => (
+								<tr>
+									<th scope="row">{index + 1}</th>
+									<td>{moment(e.start).format("yyyy-MM-DD hh:mm A")}</td>
+									<td>{moment(e.end).format("yyyy-MM-DD hh:mm A")}</td>
+								</tr>
+							)
+						)}
+					</tbody>
+				</table>
+
 			</div>
 		</div>
 	)

@@ -6,3 +6,5 @@
   .tab-pane.fade.show {
     transform: translateY(0rem);
   }
+
+  caption { caption-side:top !important;  }

@@ -40,7 +40,7 @@ const MonthlyRelativeScheduleComponent = (props) => {
             <div className="row">
                 <div className="col-lg-12">
                     <div className="form-group form-inline">
-                        <select className="form-control mr-1" data-toggle="popover" data-trigger="hover"
+                        <select className="form-control mr-1" data-toggle="popover" data-trigger="hover" property_name="freq_relative_interval"
                             value={state.freq_relative_interval} onChange={(e) => handleChange(e)}>
                             {
                                 freqRelativeInterval.map(f => (
@@ -49,7 +49,7 @@ const MonthlyRelativeScheduleComponent = (props) => {
                                     </option>))
                             }
                         </select>
-                        <select className="form-control mx-1" data-toggle="popover" data-trigger="hover"
+                        <select className="form-control mx-1" data-toggle="popover" data-trigger="hover" property_name="freq_interval"
                             value={state.freq_interval} onChange={(e) => handleChange(e)}>
                             {
                                 freqIntervalMonthlyRelative.map(g => (
