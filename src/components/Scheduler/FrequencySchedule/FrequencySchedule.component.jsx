@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { freqSubdayTypeMinMax, freqSubdayType } from './../ScheduleLookup';
+// import moment from 'moment';
 
 const FrequencyScheduleComponent = props => {
+    // let timeFormat = "hh:mm A";
+    // let dateFormat = "YYYY/MM/DD";
+    // let dateTimeFormat = dateFormat + ' ' + timeFormat;
+
+    // let timeFormatNumeric = "HHmm";
+    // let dateFormatNumeric = "YYYYMMDD";
+    // let dateTimeFormatNumeric = dateFormatNumeric + ' ' + timeFormatNumeric;
+
     const [state, setState] = useState({
         ...props.schedule
     })
@@ -13,20 +22,30 @@ const FrequencyScheduleComponent = props => {
 
     const handleChange = e => {
         let name = e.target.name;
-        let value = NaN;
+        let value = e.target.value;
         let tempState = {
             ...state
         }
 
-        if (name.startsWith("active") === true) {
-            value = e.target.value
+        if (["active_start_date", "active_end_date"].includes(name)) {
+            //value = parseInt(moment(value).format(dateFormatNumeric), 10);
+        }
+        else if (["active_start_time", "active_end_time"].includes(name)) {
+            if (tempState.active_start_date !== undefined) {
+                // let datetimeValue = tempState.active_start_date.toString() + value;
+                //value = parseInt(moment(datetimeValue).format(dateTimeFormatNumneric), 10);
+            }
+            else {
+                e.preventDefault();
+            }
+
         }
         else if (name === "occurance_choice_state") {
-            value = e.target.value === 'true' ? true : e.target.value === 'false' ? false : undefined;
+            value = value === 'true' ? true : value === 'false' ? false : undefined;
             resetOccuranceData(value, tempState)
         }
         else {
-            value = parseInt(e.target.value, 10) || e.target.value;
+            value = parseInt(value, 10) || value;
         }
 
         tempState[name] = value;

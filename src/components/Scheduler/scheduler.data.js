@@ -19,9 +19,6 @@ export const generateScheduleDescription = (schedule) => {
     var desc = "Occurs";
     var sch = schedule;
 
-    console.log(moment(sch.active_start_time));
-    console.log(moment(sch.active_start_time).format(timeFormat));
-
     let active_start_time_string = sch.active_start_time === undefined ? "[start time not provided]" : moment(sch.active_start_time, timeFormat).format(timeFormat);
     let active_end_time_string = sch.active_end_time === undefined ? "[end time not provided]" : moment(sch.active_end_time, timeFormat).format(timeFormat);
     let active_start_date_string = sch.active_start_date === undefined ? "[start date not provided]" : moment(sch.active_start_date).format(dateFormat);
@@ -128,7 +125,7 @@ export const generateScheduleDescription = (schedule) => {
 }; //end generateScheduleDescription
 
 export const generateEvents = (schedule) => {
-
+    console.log(schedule)
     var events = [];
     var sch = schedule;
     //var isValid = isScheduleValid(sch);
@@ -210,11 +207,18 @@ export const generateEvents = (schedule) => {
                     let weekDay = selectedWeekDays[i];
 
                     //$weeks
-                    endTimeInSeconds = moment.duration(moment(sch.active_end_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
-                    let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+                    // debugger;
+                    let defaultDate = "1900-01-01 ";
+                    let active_start_time = new Date(defaultDate + sch.active_start_time).toISOString();
+                    let active_end_time = new Date(defaultDate + sch.active_end_time).toISOString();
 
-                    let startTimeInSeconds = moment.duration(moment(sch.active_start_time).diff(moment(sch.active_end_time).startOf('day').toDate())).asSeconds();
+                    endTimeInSeconds = moment.duration(moment(active_end_time).diff(moment(active_end_time).startOf('day').toDate())).asSeconds();
+                    let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
+                    console.log(activeEndDate);
+
+                    let startTimeInSeconds = moment.duration(moment(active_start_time).diff(moment(active_end_time).startOf('day').toDate())).asSeconds();
                     let nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
+                    console.log(nextDate);
 
                     if (moment(nextDate).isoWeekday() <= schedulerData.momentWeek[weekDay.value])
                         nextDate = moment(nextDate).isoWeekday(schedulerData.momentWeek[weekDay.value]).toDate();
