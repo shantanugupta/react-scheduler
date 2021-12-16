@@ -1,7 +1,6 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import './MonthlyRelativeSchedule.style.css';
 import FrequencyScheduleComponent from './../FrequencySchedule/FrequencySchedule.component';
-import { useState } from 'react';
 import { freqIntervalMonthlyRelative, freqRelativeInterval } from './../ScheduleLookup';
 
 // freq_relative_interval
@@ -9,23 +8,31 @@ import { freqIntervalMonthlyRelative, freqRelativeInterval } from './../Schedule
 // scheduler.freqRelativeInterval
 // scheduler.freqIntervalMonthlyRelative
 
-const MonthlyRelativeScheduleComponent = ({ schedule, onMonthlyRelativeScheduleChange }) => {
+const MonthlyRelativeScheduleComponent = (props) => {
     const [state, setState] = useState({
-        ...schedule
+        ...props.schedule
     });
 
     const handleChange = e => {
+        let name = e.target.attributes["property_name"].value;
+        let value = e.target.value;
+
         let tempState = {
             ...state,
-            [e.target.name]: parseInt(e.target.value, 10) || e.target.value
+            [name]: parseInt(value, 10) || value
         }
 
         propogateChange(tempState);
     };
 
+    useEffect(() => {
+        let newState = props.schedule;
+        setState(newState);
+    }, [props.schedule])
+
     const propogateChange = t => {
         setState(t);
-        onMonthlyRelativeScheduleChange(t);
+        props.onComponentChange(t);
     }
 
     return (
@@ -52,7 +59,7 @@ const MonthlyRelativeScheduleComponent = ({ schedule, onMonthlyRelativeScheduleC
                             }
                         </select>
                         <label className="control-label font-weight-bold mx-1" htmlFor="recurrEvery">OF EVERY</label>
-                        <input id="recurrEvery" name="freq_recurrence_factor" className="form-control text-uppercase mx-1"
+                        <input id="recurrEvery" property_name="freq_recurrence_factor" className="form-control text-uppercase mx-1"
                             value={state.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60"
                             onChange={(e) => handleChange(e)}
                         />
