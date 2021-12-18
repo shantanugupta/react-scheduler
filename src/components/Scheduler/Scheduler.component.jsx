@@ -137,9 +137,9 @@ const SchedulerComponent = () => {
 									return (
 										![64, 128].includes(freq.key) &&
 										<li key={freq.key} className="nav-item">
-											<a href="#freqType1" property_name="freq_type" className={"nav-link " + (state.freq_type === freq.key ? 'active' : '')}
+											<a href={"#freqType" + state.freq_type} property_name="freq_type" className={"nav-link " + (state.freq_type === freq.key ? 'active' : '')}
 												onClick={(e) => scheduleTypeChange(freq.key)}
-												data-toggle="tab" role="tab" aria-controls="freqType1" aria-selected={state.freq_type === freq.key}>
+												data-toggle="tab" role="tab" aria-controls={"freqType" + state.freq_type} aria-selected={state.freq_type === freq.key}>
 												{freq.value}</a>
 										</li>)
 								})
@@ -213,10 +213,12 @@ const SchedulerComponent = () => {
 							{state.description}
 						</div>
 					</div>
+					{/* GENERATE EVENTS */}
 					<div className="mt-2">
-						<input className="btn btn-primary" type="submit" onClick={(e) => generateEventsClick(e)} />
+						<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
 					</div>
 				</div>
+				{/* JSON RECORD */}
 				<div className="card col-4 p-2 ml-2">
 					{
 						true &&
@@ -226,9 +228,10 @@ const SchedulerComponent = () => {
 					}
 				</div>
 			</div>
+			{/* LIST OF EVENTS */}
 			<div className="card row p-2 m-2">
 				<table className="table table-stripe table-hover ">
-					<caption>List of events</caption>
+					<caption>No of events generated : {eventState.length}</caption>
 					<thead>
 						<tr>
 							<th scope="col">S.No.</th>
