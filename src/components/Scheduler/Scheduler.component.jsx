@@ -66,10 +66,10 @@ const SchedulerComponent = () => {
 			active_end_date: active_end_date,
 			active_start_time: active_start_time,
 			active_end_time: active_end_time,
-			freq_subday_type: 1,
-			freq_subday_interval: 0,
-			duration_subday_type: 1, //duration in (hour, min, sec)
-			duration_interval: '', //duration value
+			freq_subday_type: 2, //Occurance in (at specified time, hour, min, sec)
+			freq_subday_interval: 1,
+			duration_subday_type: 2, //duration in (at specified time, hour, min, sec)
+			duration_interval: 1, //duration value
 			occurance_choice_state: false
 		}
 	}
@@ -135,6 +135,7 @@ const SchedulerComponent = () => {
 							{
 								freqType.map(freq => {
 									return (
+										![64, 128].includes(freq.key) &&
 										<li key={freq.key} className="nav-item">
 											<a href="#freqType1" property_name="freq_type" className={"nav-link " + (state.freq_type === freq.key ? 'active' : '')}
 												onClick={(e) => scheduleTypeChange(freq.key)}
