@@ -196,7 +196,8 @@ export const generateEvents = (schedule) => {
                     if (sch.duration_interval > 0) {
                         endDate = moment(nextDate).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]);
                     }
-                    events.push({ start: nextDate, end: endDate });
+                    if (!moment(nextDate).isBefore(moment()))
+                        events.push({ start: nextDate, end: endDate });
                 }
 
                 nextDate = moment(nextDate).add(sch.freq_interval, 'days').startOf('days').add(startTimeInSeconds, 'seconds').toDate();
@@ -222,13 +223,15 @@ export const generateEvents = (schedule) => {
                     let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
                     let nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
 
-                    if (moment(nextDate).isoWeekday() <= schedulerData.momentWeek[weekDay.value])
-                        nextDate = moment(nextDate).isoWeekday(schedulerData.momentWeek[weekDay.value]).toDate();
+                    if (moment(nextDate).weekday() <= schedulerData.momentWeek[weekDay.value])
+                        nextDate = moment(nextDate).weekday(schedulerData.momentWeek[weekDay.value]).toDate();
                     else
-                        nextDate = moment(nextDate).add(1, 'weeks').isoWeekday(schedulerData.momentWeek[weekDay.value]).toDate();
+                        nextDate = moment(nextDate).add(1, 'weeks').weekday(schedulerData.momentWeek[weekDay.value]).toDate();
 
+                    //generate all events until last event's end date is not reached
                     while (moment(nextDate).isAfter(activeEndDate) === false) {
                         let s = sch.freq_subday_type;
+                        //if Occurs At/Every option is selected and has some value
                         if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                             let nextTime = nextDate;
                             let nextEndTime = moment(nextDate).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
@@ -237,16 +240,19 @@ export const generateEvents = (schedule) => {
                                 if (sch.duration_interval > 0) {
                                     endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                                 }
-                                events.push({ start: nextTime, end: endDate });
+                                if (!moment(nextTime).isBefore(moment()))
+                                    events.push({ start: nextTime, end: endDate });
 
                                 nextTime = moment(nextTime).add(sch.freq_subday_interval, schedulerData.momentTimeValue[sch.freq_subday_type]).toDate();
-                            }
-                        } else {
+                            }//end while loop - nextTime.isAfter(nextEndTime)
+                        }//end if occurance_choice_state
+                        else {
                             if (sch.duration_interval > 0) {
                                 endDate = moment(nextDate).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]);
                             }
-                            events.push({ start: nextDate, end: endDate });
-                        }
+                            if (!moment(nextDate).isBefore(moment()))
+                                events.push({ start: nextDate, end: endDate });
+                        }//end else
 
                         nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'weeks').startOf('days').add(startTimeInSeconds, 'seconds').toDate();
                     }//end outer while
@@ -254,12 +260,15 @@ export const generateEvents = (schedule) => {
             }//end if selectedWeekDays
             break;
         case 16: //FreqType.Monthly:
+            activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
             nextDate = moment(sch.active_start_date).startOf('month').add(sch.freq_interval - 1, 'days').add(startTimeInSeconds, 'seconds').toDate();
 
             if (moment(nextDate).isBefore(sch.active_start_date) === true)
                 nextDate = moment(nextDate).add(1, 'month').toDate();
 
-            while (moment(nextDate).isAfter(activeEndDate) === false) {
+            while (moment(nextDate).isAfter(activeEndDate) === false
+                && moment(nextDate).isAfter(moment().startOf('days'))
+            ) {
                 var s = sch.freq_subday_type;
                 if (sch.occurance_choice_state === false && (s === 2 || s === 4 || s === 8)) {
                     var nextTime = nextDate;
@@ -269,7 +278,8 @@ export const generateEvents = (schedule) => {
                         if (sch.duration_interval > 0) {
                             endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                         }
-                        events.push({ start: nextTime, end: endDate });
+                        if (!moment(nextDate).isBefore(moment()))
+                            events.push({ start: nextTime, end: endDate });
 
                         nextTime = moment(nextTime).add(sch.freq_subday_interval, schedulerData.momentTimeValue[sch.freq_subday_type]).toDate();
                     }
@@ -277,7 +287,8 @@ export const generateEvents = (schedule) => {
                     if (sch.duration_interval > 0) {
                         endDate = moment(nextDate).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]);
                     }
-                    events.push({ start: nextDate, end: endDate });
+                    if (!moment(nextDate).isBefore(moment()))
+                        events.push({ start: nextDate, end: endDate });
                 }
 
                 nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(sch.freq_interval - 1, 'days').add(startTimeInSeconds, 'seconds').toDate();
@@ -291,7 +302,9 @@ export const generateEvents = (schedule) => {
             let firstSecThrdFrthLast = Math.log2(sch.freq_relative_interval);
             let weekdayWeekendSunToMon = sch.freq_interval;
 
-            while (moment(nextDate).isAfter(activeEndDate) === false) {
+            while (moment(nextDate).isAfter(activeEndDate) === false
+                && moment(nextDate).isAfter(moment().startOf('days'))
+            ) {
                 let startOfMonth = moment(nextDate).startOf('month').toDate();
                 let endOfMonth = moment(nextDate).endOf('month').startOf('day').toDate();
 
@@ -381,7 +394,8 @@ export const generateEvents = (schedule) => {
                         if (sch.duration_interval > 0) {
                             endDate = moment(nextTime).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                         }
-                        events.push({ start: nextTime, end: endDate });
+                        if (!moment(nextDate).isBefore(moment()))
+                            events.push({ start: nextTime, end: endDate });
 
                         nextTime = moment(nextTime).add(sch.freq_subday_interval, schedulerData.momentTimeValue[sch.freq_subday_type]).toDate();
                     }
@@ -389,7 +403,8 @@ export const generateEvents = (schedule) => {
                     if (sch.duration_interval > 0) {
                         endDate = moment(nextDate).add(sch.duration_interval, schedulerData.momentTimeValue[sch.duration_subday_type]).toDate();
                     }
-                    events.push({ start: nextDate, end: endDate });
+                    if (!moment(nextDate).isBefore(moment()))
+                        events.push({ start: nextDate, end: endDate });
                 }
 
                 nextDate = moment(nextDate).add(sch.freq_recurrence_factor, 'month').startOf('month').add(startTimeInSeconds, 'seconds').toDate();
