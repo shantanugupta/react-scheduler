@@ -418,7 +418,35 @@ export const generateEvents = (schedule) => {
     return events;
 };
 
-// export const init = () => {
-//     freq_type = 4;
-//     weeks = new Array(7);
-// };
+export const saveEvents = async (schedule) => {
+    const endpoint = 'https://localhost:7049/Scheduler';
+    const input = schedule;
+
+    try {
+        const data = await postJSON(endpoint, input);
+        console.log(data);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
+
+const postJSON = async (endpoint, input) => {
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(input),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Api call failed');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+};

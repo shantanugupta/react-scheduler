@@ -11,7 +11,7 @@ import MonthlyScheduleComponent from './MonthlySchedule/MonthlySchedule.componen
 import MonthlyRelativeScheduleComponent from './MonthlyRelativeSchedule/MonthlyRelativeSchedule.component';
 import YearlyScheduleComponent from './YearlySchedule/YearlySchedule.component';
 import YearLongScheduleComponent from './YearLongSchedule/YearLongSchedule.component';
-import { generateScheduleDescription, generateEvents } from './scheduler.data';
+import { generateScheduleDescription, generateEvents, saveEvents } from './scheduler.data';
 
 const SchedulerComponent = () => {
 	const dateFormatyyyymmdd = "yyyy-MM-DD";
@@ -46,6 +46,10 @@ const SchedulerComponent = () => {
 	const generateEventsClick = e => {
 		let events = generateEvents(state);
 		setEventState(events);
+	}
+
+	const saveEventsClick = e => {
+		saveEvents(state);
 	}
 
 	// Create a blank schedule when loading component for the first time or after saving/reset the component
@@ -215,7 +219,10 @@ const SchedulerComponent = () => {
 					</div>
 					{/* GENERATE EVENTS */}
 					<div className="mt-2">
-						<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
+						<div className="form-group">
+							<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
+							<input type="button" className="btn btn-primary ml-2" onClick={(e) => saveEventsClick(e)} value="Save events" />
+						</div>
 					</div>
 				</div>
 				{/* JSON RECORD */}
