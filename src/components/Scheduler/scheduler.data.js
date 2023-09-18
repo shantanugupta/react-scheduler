@@ -428,6 +428,7 @@ export const saveEvents = async (baseUrl, schedule) => {
     try {
         const data = await postJSON(endpoint, input);
         console.log(data);
+        return data;
     } catch (error) {
         console.log(`Error -> ${error}`);
         //console.error('Error:', error.message);

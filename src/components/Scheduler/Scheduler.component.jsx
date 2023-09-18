@@ -20,6 +20,8 @@ const SchedulerComponent = () => {
 	const [state, setState] = useState(blankSchedule);
 	const [eventState, setEventState] = useState([]);
 	const [endpoint, setEndpoint] = useState("https://localhost:7049");
+	const [saveEventOutput, setSaveEventOutput] = useState([]);
+
 
 	const handleChange = e => {
 		let name = e.target.attributes["property_name"].value;
@@ -60,8 +62,9 @@ const SchedulerComponent = () => {
 		setEventState(events);
 	}
 
-	const saveEventsClick = e => {
-		saveEvents(endpoint, state);
+	const saveEventsClick = async (e) => {
+		var saveEventOutput = await saveEvents(endpoint, state);
+		setSaveEventOutput(saveEventOutput);
 	}
 
 	const validateScheduleClick = e => {
@@ -137,9 +140,10 @@ const SchedulerComponent = () => {
 	const showClass = "show active";
 
 	return (
-		<div>
-			<div className="row m-2">
-				<div className="card col-lg p-2">
+		<div className="row m-1">
+			<div className='card col'>
+				{/* Scheduler control */}
+				<div className='mt-2'>
 					{/* SCHEDULE NAME */}
 					<div className="card border-0">
 						<div className="form-group">
@@ -244,39 +248,43 @@ const SchedulerComponent = () => {
 						</div>
 					</div>
 				</div>
-				{/* JSON RECORD */}
-				<div className="card col-4 p-2 ml-2">
-					{
-						true &&
-						<div className="card-body">
-							<ReactJson src={state} />
-						</div>
-					}
+				{/* LIST OF EVENTS */}
+				<div>
+					<table className="table table-stripe table-hover ">
+						<caption>No of events generated : {eventState.length}</caption>
+						<thead>
+							<tr>
+								<th scope="col">S.No.</th>
+								<th scope="col">Start date/time</th>
+								<th scope="col">End date/time</th>
+							</tr>
+						</thead>
+						<tbody>
+							{eventState.map(
+								(e, index) => (
+									<tr>
+										<th scope="row">{index + 1}</th>
+										<td>{moment(e.start).format("yyyy-MM-DD hh:mm A")}</td>
+										<td>{moment(e.end).format("yyyy-MM-DD hh:mm A")}</td>
+									</tr>
+								)
+							)}
+						</tbody>
+					</table>
 				</div>
 			</div>
-			{/* LIST OF EVENTS */}
-			<div className="card row p-2 m-2">
-				<table className="table table-stripe table-hover ">
-					<caption>No of events generated : {eventState.length}</caption>
-					<thead>
-						<tr>
-							<th scope="col">S.No.</th>
-							<th scope="col">Start date/time</th>
-							<th scope="col">End date/time</th>
-						</tr>
-					</thead>
-					<tbody>
-						{eventState.map(
-							(e, index) => (
-								<tr>
-									<th scope="row">{index + 1}</th>
-									<td>{moment(e.start).format("yyyy-MM-DD hh:mm A")}</td>
-									<td>{moment(e.end).format("yyyy-MM-DD hh:mm A")}</td>
-								</tr>
-							)
-						)}
-					</tbody>
-				</table>
+			{/* JSON RECORD */}
+			<div className='card col-3 ml-2 p-2'>
+				<label className="font-weight-bold">Input JSON</label>
+				{
+					true &&
+					<ReactJson src={state} />
+				}
+				<label className="font-weight-bold mt-2">Output from Save events click</label>
+				{
+					true &&
+					<ReactJson src={saveEventOutput} />
+				}
 			</div>
 		</div>
 	)
