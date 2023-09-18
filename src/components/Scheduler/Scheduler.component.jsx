@@ -11,7 +11,7 @@ import MonthlyScheduleComponent from './MonthlySchedule/MonthlySchedule.componen
 import MonthlyRelativeScheduleComponent from './MonthlyRelativeSchedule/MonthlyRelativeSchedule.component';
 import YearlyScheduleComponent from './YearlySchedule/YearlySchedule.component';
 import YearLongScheduleComponent from './YearLongSchedule/YearLongSchedule.component';
-import { generateScheduleDescription, generateEvents, saveEvents } from './scheduler.data';
+import { generateScheduleDescription, generateEvents, saveEvents, validateSchedule } from './scheduler.data';
 
 const SchedulerComponent = () => {
 	const dateFormatyyyymmdd = "yyyy-MM-DD";
@@ -19,6 +19,7 @@ const SchedulerComponent = () => {
 
 	const [state, setState] = useState(blankSchedule);
 	const [eventState, setEventState] = useState([]);
+	const [endpoint, setEndpoint] = useState("https://localhost:7049");
 
 	const handleChange = e => {
 		let name = e.target.attributes["property_name"].value;
@@ -43,13 +44,28 @@ const SchedulerComponent = () => {
 		setState(tempState);
 	}
 
+	const handleEndpointChange = e => {
+		let value = e.target.value;
+		setEndpoint(value);
+	}
+
 	const generateEventsClick = e => {
+		var startTime = performance.now();
+
 		let events = generateEvents(state);
+
+		var endTime = performance.now();
+		console.log(`Generate event execution time: ${endTime - startTime} milliseconds. Events count: ${events.length}`);
+
 		setEventState(events);
 	}
 
 	const saveEventsClick = e => {
-		saveEvents(state);
+		saveEvents(endpoint, state);
+	}
+
+	const validateScheduleClick = e => {
+		validateSchedule(state);
 	}
 
 	// Create a blank schedule when loading component for the first time or after saving/reset the component
@@ -219,9 +235,12 @@ const SchedulerComponent = () => {
 					</div>
 					{/* GENERATE EVENTS */}
 					<div className="mt-2">
-						<div className="form-group">
+						<div className="form-group form-inline">
 							<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
 							<input type="button" className="btn btn-primary ml-2" onClick={(e) => saveEventsClick(e)} value="Save events" />
+							<input type="button" className="btn btn-primary ml-2" onClick={(e) => validateScheduleClick(e)} value="Validate schedule" />
+							<input type="text" id="endpointUrl" property_name="endpoint" className="form-control ml-2" placeholder="Scheduler base url endpoint e.g. https://localhost:7049/"
+								value={endpoint} onChange={(e) => handleEndpointChange(e)} />
 						</div>
 					</div>
 				</div>
@@ -258,7 +277,6 @@ const SchedulerComponent = () => {
 						)}
 					</tbody>
 				</table>
-
 			</div>
 		</div>
 	)

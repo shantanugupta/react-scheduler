@@ -418,27 +418,35 @@ export const generateEvents = (schedule) => {
     return events;
 };
 
-export const saveEvents = async (schedule) => {
-    const endpoint = 'https://localhost:7049/Scheduler';
-    const input = schedule;
+export const validateSchedule = (schedule) =>{
 
+}
+
+export const saveEvents = async (baseUrl, schedule) => {
+    const endpoint = `${baseUrl}/Scheduler`;
+    const input = schedule;
     try {
         const data = await postJSON(endpoint, input);
         console.log(data);
     } catch (error) {
-        console.error('Error:', error.message);
+        console.log(`Error -> ${error}`);
+        //console.error('Error:', error.message);
     }
 };
 
 const postJSON = async (endpoint, input) => {
     try {
+
+    console.log(input);
         const response = await fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify(input),
             headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
+                'Content-type': 'application/json',
+            }
         });
+
+        console.log(response);
 
         if (!response.ok) {
             throw new Error('Api call failed');
@@ -447,6 +455,7 @@ const postJSON = async (endpoint, input) => {
         const data = await response.json();
         return data;
     } catch (err) {
+        console.log(err);
         throw new Error(err.message);
     }
 };
