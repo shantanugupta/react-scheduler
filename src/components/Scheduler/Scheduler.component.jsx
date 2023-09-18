@@ -19,7 +19,7 @@ const SchedulerComponent = () => {
 
 	const [state, setState] = useState(blankSchedule);
 	const [eventState, setEventState] = useState([]);
-	const [endpoint, setEndpoint] = useState("https://localhost:7049");
+	const [endpoint, setEndpoint] = useState("https://localhost:7049/Scheduler/GenerateEvents");
 	const [saveEventOutput, setSaveEventOutput] = useState([]);
 
 
@@ -241,9 +241,11 @@ const SchedulerComponent = () => {
 					<div className="mt-2">
 						<div className="form-group form-inline">
 							<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
-							<input type="button" className="btn btn-primary ml-2" onClick={(e) => saveEventsClick(e)} value="Save events" />
 							<input type="button" className="btn btn-primary ml-2" onClick={(e) => validateScheduleClick(e)} value="Validate schedule" />
-							<input type="text" id="endpointUrl" property_name="endpoint" className="form-control ml-2" placeholder="Scheduler base url endpoint e.g. https://localhost:7049/"
+							
+							<input type="button" className="btn btn-primary ml-2" onClick={(e) => saveEventsClick(e)} value="Save events" />
+							<label htmlFor="endpointUrl" className="font-weight-bold ml-2">API endpoint to invoke</label>
+							<input type="text" id="endpointUrl" property_name="endpoint" className="form-control col ml-2" placeholder="Scheduler base url endpoint e.g. https://localhost:7049/"
 								value={endpoint} onChange={(e) => handleEndpointChange(e)} />
 						</div>
 					</div>

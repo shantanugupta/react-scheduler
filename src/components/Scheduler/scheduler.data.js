@@ -423,7 +423,7 @@ export const validateSchedule = (schedule) =>{
 }
 
 export const saveEvents = async (baseUrl, schedule) => {
-    const endpoint = `${baseUrl}/Scheduler`;
+    const endpoint = baseUrl;
     const input = schedule;
     try {
         const data = await postJSON(endpoint, input);
