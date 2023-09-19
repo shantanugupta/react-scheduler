@@ -134,20 +134,21 @@ export const generateEvents = (schedule) => {
     // let active_end_time_string = sch.active_end_time === undefined ? "[end time not provided]" : moment(sch.active_end_time).format(timeFormat);
     // let active_start_date_string = sch.active_start_date === undefined ? "[start date not provided]" : moment(sch.active_start_date).format(dateFormat);
     // let active_end_date_string = sch.active_end_date === undefined ? "[end date not provided]" : moment(sch.active_end_date).format(dateFormat);
+
     let initialDate = "1900-01-01";
     let defaultDate = moment(initialDate);
 
-    let moment_active_start_datetime = moment(initialDate + ' ' + sch.active_start_time);
+    let moment_active_start_time = moment(initialDate + ' ' + sch.active_start_time);
 
     //if end time is smaller than start time, this means event is spill over to day 2 e.g. event starting at 9 pm and would end by 3 am
     let isBefore = moment(sch.active_end_time, "HH:mm").isBefore(moment(sch.active_start_time, "HH:mm"));
     if (isBefore) {
         defaultDate = moment(initialDate).add(1, 'days');
     }
-    let moment_active_end_datetime = moment(defaultDate.format("yyyy-MM-DD") + ' ' + sch.active_end_time);
+    let moment_active_end_time = moment(defaultDate.format("yyyy-MM-DD") + ' ' + sch.active_end_time);
 
-    let endTimeInSeconds = moment.duration(moment_active_end_datetime.diff(moment(initialDate).toDate())).asSeconds();
-    let startTimeInSeconds = moment.duration(moment_active_start_datetime.diff(moment(initialDate).toDate())).asSeconds();
+    let endTimeInSeconds = moment.duration(moment_active_end_time.diff(moment(initialDate).toDate())).asSeconds();
+    let startTimeInSeconds = moment.duration(moment_active_start_time.diff(moment(initialDate).toDate())).asSeconds();
 
     var f = sch.freq_type;
 
@@ -174,7 +175,7 @@ export const generateEvents = (schedule) => {
             break;
         case 4: //FreqType.Daily:
 
-            let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').startOf('days').toDate();
+            let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
             let nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
 
             while (moment(nextDate).isAfter(activeEndDate) === false) {
@@ -219,7 +220,7 @@ export const generateEvents = (schedule) => {
                 for (i = 0; i < selectedWeekDays.length; i++) {
                     let weekDay = selectedWeekDays[i];
 
-                    let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').startOf('days').toDate();
+                    let activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
                     let nextDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
 
                     if (moment(nextDate).weekday() <= schedulerData.momentWeek[weekDay.value])
@@ -259,7 +260,7 @@ export const generateEvents = (schedule) => {
             }//end if selectedWeekDays
             break;
         case 16: //FreqType.Monthly:
-            activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').startOf('days').toDate();
+            activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
             nextDate = moment(sch.active_start_date).startOf('month').add(sch.freq_interval - 1, 'days').add(startTimeInSeconds, 'seconds').toDate();
 
             if (moment(nextDate).isBefore(sch.active_start_date) === true)
@@ -294,7 +295,7 @@ export const generateEvents = (schedule) => {
             }//end outer while
             break;
         case 32: //FreqType.MonthlyRelativeToFreqInterval:
-            activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').startOf('days').toDate();
+            activeEndDate = moment(sch.active_end_date).startOf('days').add(endTimeInSeconds, 'seconds').toDate();
             let activeStartDate = moment(sch.active_start_date).startOf('days').add(startTimeInSeconds, 'seconds').toDate();
             nextDate = activeStartDate;
 
