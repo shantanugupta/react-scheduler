@@ -17,11 +17,8 @@ const SchedulerComponent = () => {
 	const dateFormatyyyymmdd = "yyyy-MM-DD";
 	const timeFormathhMM = "HH:mm";
 
-	const [state, setState] = useState(blankSchedule);
-	const [eventState, setEventState] = useState([]);
-	const [endpoint, setEndpoint] = useState("https://localhost:7049/Scheduler/GenerateEvents");
-	const [saveEventOutput, setSaveEventOutput] = useState([]);
-
+	const [viewModel, setViewModel] = useState(blankViewModel)
+	const [state, setState] = useState(blankSchedule);	
 
 	const handleChange = e => {
 		let name = e.target.attributes["property_name"].value;
@@ -46,25 +43,34 @@ const SchedulerComponent = () => {
 		setState(tempState);
 	}
 
-	const handleEndpointChange = e => {
+	const handleViewModelChange = e => {
 		let value = e.target.value;
-		setEndpoint(value);
+		setViewModel(value);
 	}
 
 	const generateEventsClick = e => {
-		var startTime = performance.now();
-
+		//var startTime = performance.now();
 		let events = generateEvents(state);
+		//var endTime = performance.now();
+		//console.log(`Generate event execution time: ${endTime - startTime} milliseconds. Events count: ${events.length}`);
 
-		var endTime = performance.now();
-		console.log(`Generate event execution time: ${endTime - startTime} milliseconds. Events count: ${events.length}`);
-
-		setEventState(events);
+		viewModel.events = events;
+		setViewModel(viewModel);
 	}
 
 	const saveEventsClick = async (e) => {
-		var saveEventOutput = await saveEvents(endpoint, state);
-		setSaveEventOutput(saveEventOutput);
+		let endpoint = viewModel.endpoint;
+		let saveEventOutput = await saveEvents(endpoint, state);
+
+		if (saveEventOutput!==undefined && saveEventOutput.entity !== undefined && saveEventOutput.entity.length > 0) {
+			viewModel.serverEvent = saveEventOutput.entity;
+		}
+		else if(saveEventOutput!==undefined && saveEventOutput.error !==undefined){
+			//handle error
+		}
+
+		viewModel.saveEventOutput
+		setViewModel(viewModel);
 	}
 
 	const validateScheduleClick = e => {
@@ -94,6 +100,16 @@ const SchedulerComponent = () => {
 			duration_subday_type: 2, //duration in (at specified time, hour, min, sec)
 			duration_interval: 1, //duration value
 			occurance_choice_state: false
+		}
+	}
+
+	function blankViewModel(){
+		return {
+			endpoint:"https://localhost:7049/Scheduler/GenerateEvents",
+			saveEventOutput:[],
+			serverEvent:[],
+			events:[],
+			timeOut:5
 		}
 	}
 
@@ -237,56 +253,92 @@ const SchedulerComponent = () => {
 							{state.description}
 						</div>
 					</div>
+					{/* Error messages */}
+					<div className="card mt-2 d-none">
+						<div className="card-header alert-danger">
+							Error:  
+							{state.description}
+						</div>
+					</div>
 					{/* GENERATE EVENTS */}
 					<div className="mt-2">
 						<div className="form-group form-inline">
 							<input type="button" className="btn btn-primary" onClick={(e) => generateEventsClick(e)} value="Generate Events" />
 							<input type="button" className="btn btn-primary ml-2" onClick={(e) => validateScheduleClick(e)} value="Validate schedule" />
-							
+
 							<input type="button" className="btn btn-primary ml-2" onClick={(e) => saveEventsClick(e)} value="Save events" />
 							<label htmlFor="endpointUrl" className="font-weight-bold ml-2">API endpoint to invoke</label>
 							<input type="text" id="endpointUrl" property_name="endpoint" className="form-control col ml-2" placeholder="Scheduler base url endpoint e.g. https://localhost:7049/"
-								value={endpoint} onChange={(e) => handleEndpointChange(e)} />
+								value={viewModel.endpoint} onChange={(e) => handleViewModelChange(e)} />
 						</div>
 					</div>
 				</div>
 				{/* LIST OF EVENTS */}
-				<div>
-					<table className="table table-stripe table-hover ">
-						<caption>No of events generated : {eventState.length}</caption>
-						<thead>
-							<tr>
-								<th scope="col">S.No.</th>
-								<th scope="col">Start date/time</th>
-								<th scope="col">End date/time</th>
-							</tr>
-						</thead>
-						<tbody>
-							{eventState.map(
-								(e, index) => (
-									<tr>
-										<th scope="row">{index + 1}</th>
-										<td>{moment(e.start).format("yyyy-MM-DD hh:mm A")}</td>
-										<td>{moment(e.end).format("yyyy-MM-DD hh:mm A")}</td>
-									</tr>
-								)
-							)}
-						</tbody>
-					</table>
+				<div className='form-inline'>
+					{/* JavaScript based event generation */}
+					<div className='col-6 align-top'>
+						<table className="table table-stripe table-hover ">
+							<caption>No of events generated(client side) : {viewModel.events.length}</caption>
+							<thead>
+								<tr>
+									<th scope="col">S.No.</th>
+									<th scope="col">Start date/time</th>
+									<th scope="col">End date/time</th>
+								</tr>
+							</thead>
+							<tbody>
+								{viewModel.events.map(
+									(e, index) => (
+										<tr>
+											<th scope="row">{index + 1}</th>
+											<td>{moment(e.start).format("yyyy-MM-DD hh:mm A")}</td>
+											<td>{moment(e.end).format("yyyy-MM-DD hh:mm A")}</td>
+										</tr>
+									)
+								)}
+							</tbody>
+						</table>
+					</div>
+					{/* Server side event generation */}
+					<div className='align-top'>
+						<table className="table table-stripe table-hover ">
+							<caption>No of events generated(server side) : {viewModel.serverEvent.length}</caption>
+							<thead>
+								<tr>
+									<th scope="col">S.No.</th>
+									<th scope="col">Start date/time</th>
+									<th scope="col">End date/time</th>
+								</tr>
+							</thead>
+							<tbody>
+								{viewModel.serverEvent.map(
+									(e) => (
+										<tr>
+											<th scope="row">{e.scheduleEventId}</th>
+											<td>{moment(e.startDate).format("yyyy-MM-DD hh:mm A")}</td>
+											<td>{moment(e.endDate).format("yyyy-MM-DD hh:mm A")}</td>
+										</tr>
+									)
+								)}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 			{/* JSON RECORD */}
 			<div className='card col-3 ml-2 p-2'>
-				<label className="font-weight-bold">Input JSON</label>
-				{
-					true &&
-					<ReactJson src={state} />
-				}
-				<label className="font-weight-bold mt-2">Output from Save events click</label>
-				{
-					true &&
-					<ReactJson src={saveEventOutput} />
-				}
+				<div>
+					<label className="font-weight-bold">Input JSON</label>
+					{
+						true &&
+						<ReactJson src={state} />
+					}
+					<label className="font-weight-bold mt-2">Output from Save events click</label>
+					{
+						true &&
+						<ReactJson src={viewModel.saveEventOutput} />
+					}
+				</div>
 			</div>
 		</div>
 	)

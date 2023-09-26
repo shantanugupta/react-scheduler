@@ -153,7 +153,7 @@ const FrequencyScheduleComponent = props => {
                             value={state.freq_subday_interval}
                             onChange={(e) => handleChange(e)} />
                         {/* DURATION UNIT DROPDOWN */}
-                        <select id="durationUnit" className="form-control  ml-2" data-toggle="popover" data-trigger="hover" property_name="freq_subday_type"
+                        <select className="form-control  ml-2" data-toggle="popover" data-trigger="hover" property_name="freq_subday_type"
                             value={state.freq_subday_type} onChange={(e) => handleChange(e)}>
                             {
                                 freqSubdayType.map(i => (

@@ -53,8 +53,8 @@ const WeeklyScheduleComponent = (props) => {
                 <div className="col-lg-12">
                     <div className="form-group">
                         <div>
-                            <label className="control-label font-weight-bold" htmlFor="recurrEvery">RECURS EVERY {state.freq_recurrence_factor} WEEK(S)</label>
-                            <input id="recurrEvery" property_name="freq_recurrence_factor" className="form-control text-uppercase" value={state.freq_recurrence_factor}
+                            <label className="control-label font-weight-bold" htmlFor="recurrEveryWeek">RECURS EVERY {state.freq_recurrence_factor} WEEK(S)</label>
+                            <input id="recurrEveryWeek" property_name="freq_recurrence_factor" className="form-control text-uppercase" value={state.freq_recurrence_factor}
                                 placeholder="WEEK(S)" type="number" min="1" max="100"
                                 onChange={e => handleChange(e)} />
                         </div>

@@ -58,12 +58,12 @@ const MonthlyRelativeScheduleComponent = (props) => {
                                     </option>))
                             }
                         </select>
-                        <label className="control-label font-weight-bold mx-1" htmlFor="recurrEvery">OF EVERY</label>
-                        <input id="recurrEvery" property_name="freq_recurrence_factor" className="form-control text-uppercase mx-1"
+                        <label className="control-label font-weight-bold mx-1" htmlFor="recurrEveryMonthRelative">OF EVERY</label>
+                        <input id="recurrEveryMonthRelative" property_name="freq_recurrence_factor" className="form-control text-uppercase mx-1"
                             value={state.freq_recurrence_factor} placeholder="MONTH" type="number" min="1" max="60"
                             onChange={(e) => handleChange(e)}
                         />
-                        <label className="control-label font-weight-bold" htmlFor="recurrEvery">MONTH(S)</label>
+                        <label className="control-label font-weight-bold" htmlFor="recurrEveryMonthRelative">MONTH(S)</label>
                     </div>
                 </div>
             </div>

@@ -418,7 +418,7 @@ export const generateEvents = (schedule) => {
     return events;
 };
 
-export const validateSchedule = (schedule) =>{
+export const validateSchedule = (schedule) => {
 
 }
 
@@ -436,27 +436,22 @@ export const saveEvents = async (baseUrl, schedule) => {
 };
 
 const postJSON = async (endpoint, input) => {
-    try {
-
     console.log(input);
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(input),
-            headers: {
-                'Content-type': 'application/json',
-            }
-        });
-
-        console.log(response);
-
-        if (!response.ok) {
-            throw new Error('Api call failed');
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        body: JSON.stringify(input),
+        headers: {
+            'Content-type': 'application/json',
         }
+    });
 
-        const data = await response.json();
-        return data;
-    } catch (err) {
-        console.log(err);
-        throw new Error(err.message);
+    console.log(response);
+
+    if (!response.ok) {
+        return await response.text().then(text => { return JSON.parse(text) })
     }
+
+    const data = await response.json();
+
+    return data;
 };
