@@ -44,8 +44,14 @@ const SchedulerComponent = () => {
 	}
 
 	const handleViewModelChange = e => {
-		let value = e.target.value;
-		setViewModel(value);
+		let endpoint = e.target.value;
+
+		let tempViewModel = {
+			...viewModel,
+			endpoint:endpoint
+		}
+
+		setViewModel(tempViewModel);
 	}
 
 	const generateEventsClick = e => {
@@ -54,23 +60,29 @@ const SchedulerComponent = () => {
 		//var endTime = performance.now();
 		//console.log(`Generate event execution time: ${endTime - startTime} milliseconds. Events count: ${events.length}`);
 
-		viewModel.events = events;
-		setViewModel(viewModel);
+		let tempViewModel = {
+			...viewModel,
+			events:events
+		}
+		setViewModel(tempViewModel);
 	}
 
 	const saveEventsClick = async (e) => {
-		let endpoint = viewModel.endpoint;
-		let saveEventOutput = await saveEvents(endpoint, state);
+		let saveEventOutput = await saveEvents(viewModel.endpoint, state);
+
+		let tempViewModel = {
+			...viewModel,
+			saveEventOutput:saveEventOutput
+		}
 
 		if (saveEventOutput!==undefined && saveEventOutput.entity !== undefined && saveEventOutput.entity.length > 0) {
-			viewModel.serverEvent = saveEventOutput.entity;
+			tempViewModel.serverEvent = saveEventOutput.entity;
 		}
 		else if(saveEventOutput!==undefined && saveEventOutput.error !==undefined){
 			//handle error
 		}
 
-		viewModel.saveEventOutput
-		setViewModel(viewModel);
+		setViewModel(tempViewModel);
 	}
 
 	const validateScheduleClick = e => {
